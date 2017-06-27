@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>MAGFest CodeCon 2017</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <style type="text/css">
+      @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+      @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+      @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+      body { font-family: 'Droid Serif'; }
+      h1, h2, h3 {
+        font-family: 'Yanone Kaffeesatz';
+        font-weight: normal;
+      }
+      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+
+      .footnote {
+        bottom: 12px;
+        left: 0;
+        position: absolute;
+        width: 100%;
+      }
+
+      .text-xl { font-size: 1.5em; }
+      .text-lg { font-size: 1.25em; }
+      .text-md { font-size: 1em; }
+      .text-sm { font-size: 0.75em; }
+      .text-xs { font-size: 0.5em; }
+      .text-subtle { color: #808080; }
+      .text-italic { font-style: italic; }
+
+      code { background-color: #F0F0F0; }
+
+      blockquote {
+        background-color: #f6f8fa;
+        padding: 1em 1em 1em 1em;
+        margin: 0;
+      }
+
+      blockquote h3, blockquote p {
+        margin: 0.25em 0;
+      }
+    </style>
+    <link rel="stylesheet" href="mermaid.css">
+  </head>
+  <body>
+    <textarea id="source">
+
+class: center, middle
+
+# MAGFest CodeCon 2017
+
+July 8, 2017
+
+.footnote[.text-subtle.text-italic[Press P to toggle presenter mode]]
+
+---
+
+layout: true
+
+# Agenda
+
+---
+
+### Morning Session (9:30am-11:30am)
+
+--
+
+* Review objectives for CodeCon
+
+--
+
+* Review pain points in current system
+
+--
+
+* Proposal for refactoring current system
+
+---
+
+### Lunch (11:30am-12pm)
+
+--
+
+### MAGLabs Con (12pm-3:30pm)
+
+---
+
+### Evening Session (4pm-7pm)
+
+--
+
+* Review persistent system user stories
+
+--
+
+* Proposal for persistent system
+
+--
+
+* Round table discussion
+
+---
+
+layout: false
+
+# Objectives
+
+--
+
+1. Reach consensus on refactoring changes
+
+--
+
+2. Reach consensus on persistent system design
+
+???
+
+We're going to cover a lot of ground, but all of it is leading up to a new
+system design. And we must have agreement on what that system is going to look
+like.
+
+--
+
+3. Reach consensus on new name!!!
+
+???
+
+This is actually a critical issue. The naming of things seems superficial, but
+it prevents us from even having a discussion about the system.
+
+The confusion is widespread and deeply rooted. I see confusion and questions
+from new developers, from STOPS volunteers, and even from veteran MAGFest
+staff.
+
+---
+
+layout: true
+
+# Pain points
+
+---
+
+.center[The tradition of Festivus begins with the airing of grievances.]
+
+--
+
+.center[.text-lg[I got a lot of problems with you people...]]
+
+--
+
+.center[.text-xl[And now, you're gonna hear about it!]]
+
+---
+
+## The issue
+
+`common.py` and wildcard import statements:
+
+```python
+from uber.common import *
+```
+
+--
+
+## Why is this bad?
+
+* Circular dependencies
+--
+
+* Static analysis via `flake8` is impossible
+--
+
+* It's straight up admonished in `pep8`
+--
+
+* We're teaching bad habits to impressionable young programmers
+
+---
+
+## The issue
+
+Modules with import side effects:
+
+```python
+import sideboard
+```
+
+--
+
+## Why is this bad?
+
+* Makes script writing difficult
+--
+
+* Using a package as a library is impossible
+
+---
+
+## The issue
+
+Overloaded/interdependent properties:
+
+```python
+attendee.staffing
+attendee.badge_type == c.STAFF_BADGE
+attendee.ribbon == c.VOLUNTEER_RIBBON
+```
+
+--
+
+## Why is this bad?
+
+* Meaning is unclear both in code and in the user interface
+--
+
+* Interdependent variables cause fragile, hard to read code
+
+---
+
+## The issue
+
+Unneccesary multithreading:
+
+```python
+DaemonTask(SendAllAutomatedEmailsJob.send_all_emails, interval=300, name="send emails")
+```
+
+--
+
+## Why is this bad?
+
+* Makes load balancing impossible
+--
+
+* `BADGE_LOCK`
+
+---
+
+## The issue
+
+JSON APIs aren't exposed/use separate auth
+
+--
+
+## Why is this bad?
+
+* So much duplicated code
+--
+
+* Can't just open it up because validations aren't part of the model
+
+---
+
+## The issue
+
+JavaScript is sprinkled all over the place, never linted, never minified
+
+--
+
+## Why is this bad?
+
+* Super scary
+--
+
+* Super fragile
+--
+
+* Who knows what we're doing where?
+--
+
+* We're currently serving `angular.js` with the preregistration form!!!
+
+---
+
+## The issue
+
+Plugin architecture
+
+--
+
+## Why is this bad?
+
+* Complexity multiplier
+--
+
+  * Multiple repositories
+--
+
+  * Database migrations
+--
+
+  * Configuration management
+--
+
+* No clear value added
+
+---
+
+## The issue
+
+Event configuration stored in config files
+
+--
+
+## Why is this bad?
+
+* Two kinds of config:
+  * Service config (DB password, IP address/port, secret keys, etc...)
+  * Event config (Registration dates, badge prices, departments, etc...)
+--
+
+* Changing event config requires a developer
+--
+
+* Changing event config requires a redployment
+--
+
+* Difficult to integrate our software into an existing ecosystem
+--
+
+* "`c`" variable is not great
+
+---
+
+## The issue
+
+Naming bifurcation (Ubersystem vs RAMS)
+
+--
+
+## Why is this bad?
+
+> .right[.text-sm[https://github.com/magfest/ubersystem]]
+> ### IMPORTANT NOTE
+>
+> This is a fork of the RAMS Project used by MAGFest. It may contain
+> MAGFest-specific modifications and some less well-tested code. We recommend,
+> unless you are actively developing for MAGFest, that you visit the parent
+> project at https://github.com/ramsproject/rams
+
+---
+
+layout: true
+
+# Refactor
+
+---
+
+## Current State
+
+---
+
+## Desired State
+
+- New repository named PRODUCT
+- Sideboard is imported as dependency
+- Database includes tables from every plugin
+- Plugins become regular modules and only the UI is enabled/disabled
+- Schema is made generic enough to support workflows for each event
+  - For super specific customizations we can still use the plugin system
+  - Plugin database tables live in a separate schema
+  - Plugin user interface will be enabled on a per-event basis
+- Event config files converted into event table in database
+
+    </textarea>
+
+    <script src="remark-latest.min.js"></script>
+    <script type="text/javascript">
+      var slideshow = remark.create({
+        // Set the slideshow display ratio
+        // Default: '4:3'
+        // Alternatives: '16:9', ...
+        ratio: '4:3',
+
+        // Navigation options
+        navigation: {
+          // Enable or disable navigating using scroll
+          // Default: true
+          // Alternatives: false
+          scroll: true,
+
+          // Enable or disable navigation using touch
+          // Default: true
+          // Alternatives: false
+          touch: true,
+
+          // Enable or disable navigation using click
+          // Default: false
+          // Alternatives: true
+          click: true
+        },
+
+        // Customize slide number label, either using a format string..
+        slideNumberFormat: 'Slide %current% of %total%',
+        // .. or by using a format function
+        slideNumberFormat: function (current, total) {
+          return 'Slide ' + current + ' of ' + total;
+        },
+
+        // Enable or disable counting incremental slides in the slide counting
+        countIncrementalSlides: false
+      });
+    </script>
+  </body>
+</html>
