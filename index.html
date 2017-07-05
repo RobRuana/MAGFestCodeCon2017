@@ -1,16 +1,17 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
 
-    <title>reveal.js</title>
+    <title>Thoughts on Ubersystem</title>
 
     <link rel="stylesheet" href="css/reveal.css">
     <link rel="stylesheet" href="css/theme/white.css">
 
     <!-- Theme used for syntax highlighting of code -->
-    <link rel="stylesheet" href="lib/css/zenburn.css">
+    <link rel="stylesheet" href="lib/css/github.css">
 
     <!-- Printing and PDF exports -->
     <script>
@@ -20,12 +21,254 @@
       link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
       document.getElementsByTagName( 'head' )[0].appendChild( link );
     </script>
+
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+
+    <style>
+      .reveal .text-xl { font-size: 1.5em; }
+      .reveal .text-lg { font-size: 1.25em; }
+      .reveal .text-md { font-size: 1em; }
+      .reveal .text-sm { font-size: 0.75em; }
+      .reveal .text-xs { font-size: 0.5em; }
+      .reveal .text-subtle { color: #808080; }
+      .reveal .text-normal { font-style: normal; }
+      .reveal .text-italic { font-style: italic; }
+      .reveal .text-left { text-align: left; }
+      .reveal .text-center { text-align: center; }
+
+      .reveal .inline { display: inline; }
+
+      .reveal blockquote {
+        width: 90%
+      }
+
+      .reveal code {
+        background-color: #f8f8f8;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 3px;
+        color: #333;
+        padding-left: 5px;
+        padding-right: 5px;
+      }
+
+      .reveal pre {
+        box-shadow: none;
+      }
+
+      section { text-align: left; }
+    </style>
   </head>
+
   <body>
     <div class="reveal">
       <div class="slides">
-        <section>Slide 1</section>
-        <section>Slide 2</section>
+
+<section class="text-center">
+  <h1>Thoughts on Ubersystem</h1>
+  <p>July 4, 2017</p>
+  <p class="text-sm text-subtle text-italic">Press S to toggle speaker notes</p>
+</section>
+
+<section>
+  <h1>Overview</h1>
+  <ol>
+    <li class="fragment">Review objectives</li>
+    <li class="fragment">Review pain points in current system</li>
+    <li class="fragment">Proposal for refactoring current system</li>
+    <li class="fragment">Review persistent system user stories</li>
+    <li class="fragment">Proposal for persistent system</li>
+  </ol>
+</section>
+
+<section>
+  <h1>Objectives</h1>
+  <ol>
+    <li class="fragment">Reach consensus on refactoring changes</li>
+    <li class="fragment">Reach consensus on persistent system design</li>
+    <li class="fragment">Reach consensus on new name!!!</li>
+  </ol>
+</section>
+
+<section>
+  <section>
+    <h1>Pain points</h1>
+    <div class="text-center">
+      <p class="fragment text-md">The tradition of Festivus begins with the airing of grievances.</p>
+      <p class="fragment text-lg">I got a lot of problems with you people...</p>
+      <p class="fragment text-xl">And now, you're gonna hear about it!</p>
+    </div>
+  </section>
+
+  <section>
+    <h1>Pain points</h1>
+    <h2>The Issue</h2>
+    <code>common.py</code> and wildcard import statements:
+    <pre><code data-trim data-noescape>
+from uber.common import *
+    </code></pre>
+
+    <h2 class="fragment">Why is this bad?</h2>
+    <ol>
+      <li class="fragment">Circular dependencies</li>
+      <li class="fragment">Name collisions</li>
+      <li class="fragment">Static analysis via <code>flake8</code> is impossible</li>
+      <li class="fragment">It's straight up admonished in <code>pep8</code></li>
+      <li class="fragment">We're teaching bad habits to impressionable young programmers</li>
+    </ol>
+  </section>
+
+  <section>
+    <h1>Pain points</h1>
+    <h2>The Issue</h2>
+    Modules with import side effects:
+    <pre><code data-trim data-noescape>
+import sideboard
+    </code></pre>
+
+    <h2 class="fragment">Why is this bad?</h2>
+    <ol>
+      <li class="fragment">Makes script writing difficult</li>
+      <li class="fragment">Using a package as a library is impossible</li>
+    </ol>
+  </section>
+
+  <section>
+    <h1>Pain points</h1>
+    <h2>The Issue</h2>
+    Overloaded/interdependent properties:
+    <pre><code data-trim data-noescape>
+attendee.staffing
+attendee.badge_type == c.STAFF_BADGE
+attendee.ribbon == c.VOLUNTEER_RIBBON
+    </code></pre>
+
+    <h2 class="fragment">Why is this bad?</h2>
+    <ol>
+      <li class="fragment">Meaning is unclear both in code and in the user interface</li>
+      <li class="fragment">Interdependent variables lead to fragile, hard to read code</li>
+    </ol>
+  </section>
+
+  <section>
+    <h1>Pain points</h1>
+    <h2>The Issue</h2>
+    Unneccesary multithreading:
+    <pre><code data-trim data-noescape>
+DaemonTask(SendAllAutomatedEmailsJob.send_all_emails, interval=300, name="send emails")
+    </code></pre>
+
+    <h2 class="fragment">Why is this bad?</h2>
+    <ol>
+      <li class="fragment">Makes load balancing impossible</li>
+      <li class="fragment"><code>BADGE_LOCK</code></li>
+    </ol>
+  </section>
+
+  <section>
+    <h1>Pain points</h1>
+    <h2>The Issue</h2>
+    JSON APIs aren't exposed/use separate auth
+
+    <h2 class="fragment">Why is this bad?</h2>
+    <ol>
+      <li class="fragment">So much duplicated code</li>
+      <li class="fragment">Can't just open it up because validations aren't part of the model</li>
+    </ol>
+  </section>
+
+  <section>
+    <h1>Pain points</h1>
+    <h2>The Issue</h2>
+    JavaScript is sprinkled all over the place, never linted, never minified
+
+    <h2 class="fragment">Why is this bad?</h2>
+    <ol>
+      <li class="fragment">Super scary</li>
+      <li class="fragment">Super fragile</li>
+      <li class="fragment">Who knows what we're doing where?</li>
+      <li class="fragment">We're currently serving `angular.js` with the preregistration form!!!</li>
+    </ol>
+  </section>
+
+  <section>
+    <h1>Pain points</h1>
+    <h2>The Issue</h2>
+    Plugin architecture
+
+    <h2 class="fragment">Why is this bad?</h2>
+    <ol>
+      <li class="fragment">
+        Complexity multiplier
+        <ul>
+          <li class="fragment">Multiple repositories</li>
+          <li class="fragment">Database migrations</li>
+          <li class="fragment">Configuration management</li>
+        </ul>
+      </li>
+      <li class="fragment">No clear value added</li>
+    </ol>
+  </section>
+
+  <section>
+    <h1>Pain points</h1>
+    <h2>The Issue</h2>
+    Event configuration stored in config files
+
+    <h2 class="fragment">Why is this bad?</h2>
+    <ol>
+      <li class="fragment">
+        Two kinds of config:
+        <ul>
+          <li class="fragment">Service config (DB password, IP address/port, secret keys, etc...)</li>
+          <li class="fragment">Event config (Registration dates, badge prices, departments, etc...)</li>
+        </ul>
+      </li>
+      <li class="fragment">Changing event config requires a developer</li>
+      <li class="fragment">Difficult to integrate our software into an existing ecosystem</li>
+      <li class="fragment"><code>c</code> variable is not great</li>
+    </ol>
+  </section>
+
+  <section>
+    <h1>Pain points</h1>
+    <h2>The Issue</h2>
+    Naming bifurcation (Ubersystem vs RAMS)
+
+    <h2 class="fragment">Why is this bad?</h2>
+    <blockquote class="fragment text-normal" cite="https://github.com/magfest/ubersystem">
+<h3>IMPORTANT NOTE</h3>
+This is a fork of the RAMS Project used by MAGFest. It may contain
+MAGFest-specific modifications and some less well-tested code. We recommend,
+unless you are actively developing for MAGFest, that you visit the parent
+project at https://github.com/ramsproject/rams
+    </blockquote>
+  </section>
+</section>
+
+<section>
+  <section>
+    <h1>Refactor</h1>
+    <ul>
+      <li class="fragment">New repository named PRODUCT</li>
+      <li class="fragment">Sideboard is imported as dependency</li>
+      <li class="fragment">Database includes tables from every plugin</li>
+      <li class="fragment">Plugins become regular modules and only the UI is enabled/disabled</li>
+      <li class="fragment">
+        Schema is made generic enough to support workflows for each event
+        <ul>
+          <li class="fragment">For super specific customizations we can still use the plugin system</li>
+          <li class="fragment">Plugin database tables live in a separate schema</li>
+          <li class="fragment">Plugin user interface will be enabled on a per-event basis</li>
+        </ul>
+      </li>
+      <li class="fragment">Event config files converted into event table in database</li>
+    </ul>
+  </section>
+</section>
+
+
       </div>
     </div>
 
@@ -33,17 +276,31 @@
     <script src="js/reveal.js"></script>
 
     <script>
-      // More info about config & dependencies:
-      // - https://github.com/hakimel/reveal.js#configuration
-      // - https://github.com/hakimel/reveal.js#dependencies
+      // More info https://github.com/hakimel/reveal.js#configuration
       Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: false,
+
+        width: '100%',
+        height: '100%',
+
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        transitionSpeed: 'fast', // default/fast/slow
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+
+        // More info https://github.com/hakimel/reveal.js#dependencies
         dependencies: [
-          { src: 'plugin/markdown/marked.js' },
-          { src: 'plugin/markdown/markdown.js' },
-          { src: 'plugin/notes/notes.js', async: true },
-          { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+          { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'plugin/zoom-js/zoom.js', async: true },
+          { src: 'plugin/notes/notes.js', async: true }
         ]
       });
+
     </script>
   </body>
 </html>
