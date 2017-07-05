@@ -1,2 +1,3 @@
-# MAGFestCodeCon2017
-Slides for MAGFest CodeCon 2017
+# Thoughts on Ubersystem
+
+Slides covering my current thoughts on [Ubersystem](https://github.com/magfest/ubersystem)
