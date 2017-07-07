@@ -27,37 +27,124 @@
     <![endif]-->
 
     <style>
+      html { box-sizing: border-box; }
+      *, *:before, *:after { box-sizing: inherit; }
+
+      .reveal .pull-left { float: left; }
+      .reveal .pull-right { float: right; }
+
       .reveal .text-xl { font-size: 1.5em; }
       .reveal .text-lg { font-size: 1.25em; }
       .reveal .text-md { font-size: 1em; }
       .reveal .text-sm { font-size: 0.75em; }
       .reveal .text-xs { font-size: 0.5em; }
+      .reveal .text-mono { font-family: monospace; }
+      .reveal .text-red { color: #ff0000; }
+      .reveal .text-light { color: #b0b0b0; }
       .reveal .text-subtle { color: #808080; }
       .reveal .text-normal { font-style: normal; }
       .reveal .text-italic { font-style: italic; }
       .reveal .text-left { text-align: left; }
       .reveal .text-center { text-align: center; }
 
+      .reveal .block { display: block; }
       .reveal .inline { display: inline; }
+      .reveal .inline-block { display: inline-block; }
+      .reveal .clearfix { clear: both; }
 
       .reveal blockquote {
         width: 90%
       }
 
-      .reveal code {
-        background-color: #f8f8f8;
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        border-radius: 3px;
-        color: #333;
-        padding-left: 5px;
-        padding-right: 5px;
+      .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+        text-transform: none;
       }
 
       .reveal pre {
         box-shadow: none;
       }
 
-      section { text-align: left; }
+      .reveal code {
+        padding-left: 0.119em;
+        padding-right: 0.119em;
+      }
+
+      .reveal code, .reveal .panel {
+        background-color: rgba(50, 50, 50, 0.1);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 3px;
+        color: #333;
+      }
+
+      .reveal .panel {
+        padding: 0.5em;
+        margin-bottom: 0.25em;
+      }
+
+      .reveal .panel ul { list-style: none; }
+      .reveal .panel h1, .reveal .panel h2, .reveal .panel h3,
+      .reveal .panel h4, .reveal .panel h5, .reveal .panel h6 {
+        margin-bottom: 0.24em;
+      }
+
+      .reveal .panel h1 { font-size: 1.25em; }
+
+      .reveal .service * { font-family: monospace; }
+
+      .reveal ol, .reveal ul,
+      .reveal ol ol, .reveal ol ul,
+      .reveal ul ol, .reveal ul ul { margin: 0; }
+      .reveal ol li, .reveal ul li { margin-left: 1.25em; }
+
+      .reveal section { text-align: left; }
+
+      .reveal .col-1, .reveal .col-2, .reveal .col-3, .reveal .col-4,
+      .reveal .col-5, .reveal .col-6, .reveal .col-7, .reveal .col-8,
+      .reveal .col-9, .reveal .col-10, .reveal .col-11, .reveal .col-12 {
+        float: left;
+        padding-left: 15px;
+        padding-right: 15px;
+        width: 100%;
+      }
+
+      .reveal .col-1 { width: 8.3%; }
+      .reveal .col-2 { width: 16.6%; }
+      .reveal .col-3 { width: 25%; }
+      .reveal .col-4 { width: 33.3%; }
+      .reveal .col-5 { width: 41.6%; }
+      .reveal .col-6 { width: 50%; }
+      .reveal .col-7 { width: 58.3%; }
+      .reveal .col-8 { width: 66.6%; }
+      .reveal .col-9 { width: 75%; }
+      .reveal .col-10 { width: 83.3%; }
+      .reveal .col-11 { width: 91.6%; }
+      .reveal .col-12 { width: 100%; }
+
+      .service .folder .plugin { padding: 0.25em 0.5em; }
+      .service .folder .plugin h1 { margin-bottom: 0; }
+
+      .panel .panel { font-size: 0.8em; margin-bottom: 0; margin-left: 1.25em; }
+      .panel .panel li { margin-left: 0; }
+      .panel li { margin-bottom: 0.25em; }
+      .panel li:last-child { margin-bottom: 0; }
+
+      .reveal .icon,
+      .reveal .panel h1::before {
+        content: " ";
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        display: inline-block;
+        margin-right: 0.25em;
+        height: 1.5em;
+        width: 1.5em;
+        vertical-align: middle;
+      }
+
+      .service > h1::before, .glyphicon-cogwheels { background-image: url(images/glyphicons/glyphicons-cogwheels.png); }
+      .db > h1::before, .glyphicon-database { background-image: url(images/glyphicons/glyphicons-database.png); }
+      .folder > h1::before, .glyphicon-folder { background-image: url(images/glyphicons/glyphicons-folder-open.png); }
+      .plugin > h1::before, .glyphicon-puzzle { background-image: url(images/glyphicons/glyphicons-puzzle.png); }
+      .file > h1::before, .glyphicon-file { background-image: url(images/glyphicons/glyphicons-file.png); }
     </style>
   </head>
 
@@ -68,13 +155,13 @@
 <section class="text-center">
   <h1>Thoughts on Ubersystem</h1>
   <p>July 4, 2017</p>
+  <p class="text-sm text-subtle text-italic">Press O to toggle overview</p>
   <p class="text-sm text-subtle text-italic">Press S to toggle speaker notes</p>
 </section>
 
 <section>
   <h1>Overview</h1>
   <ol>
-    <li class="fragment">Review objectives</li>
     <li class="fragment">Review pain points in current system</li>
     <li class="fragment">Proposal for refactoring current system</li>
     <li class="fragment">Review persistent system user stories</li>
@@ -83,17 +170,8 @@
 </section>
 
 <section>
-  <h1>Objectives</h1>
-  <ol>
-    <li class="fragment">Reach consensus on refactoring changes</li>
-    <li class="fragment">Reach consensus on persistent system design</li>
-    <li class="fragment">Reach consensus on new name!!!</li>
-  </ol>
-</section>
-
-<section>
   <section>
-    <h1>Pain points</h1>
+    <h1>Pain Points</h1>
     <div class="text-center">
       <p class="fragment text-md">The tradition of Festivus begins with the airing of grievances.</p>
       <p class="fragment text-lg">I got a lot of problems with you people...</p>
@@ -102,14 +180,14 @@
   </section>
 
   <section>
-    <h1>Pain points</h1>
-    <h2>The Issue</h2>
-    <code>common.py</code> and wildcard import statements:
+    <h1>Pain Points</h1>
+    <h2>The issue</h2>
+    <p><code>common.py</code> and wildcard import statements:</p>
     <pre><code data-trim data-noescape>
 from uber.common import *
     </code></pre>
 
-    <h2 class="fragment">Why is this bad?</h2>
+    <h2 class="fragment">Why is this an issue?</h2>
     <ol>
       <li class="fragment">Circular dependencies</li>
       <li class="fragment">Name collisions</li>
@@ -120,58 +198,63 @@ from uber.common import *
   </section>
 
   <section>
-    <h1>Pain points</h1>
-    <h2>The Issue</h2>
-    Modules with import side effects:
+    <h1>Pain Points</h1>
+    <h2>The issue</h2>
+    <p>Modules with import side effects:</p>
     <pre><code data-trim data-noescape>
 import sideboard
     </code></pre>
 
-    <h2 class="fragment">Why is this bad?</h2>
+    <h2 class="fragment">Why is this an issue?</h2>
     <ol>
+      <li class="fragment">Circular dependencies</li>
       <li class="fragment">Makes script writing difficult</li>
       <li class="fragment">Using a package as a library is impossible</li>
     </ol>
   </section>
 
   <section>
-    <h1>Pain points</h1>
-    <h2>The Issue</h2>
-    Overloaded/interdependent properties:
+    <h1>Pain Points</h1>
+    <h2>The issue</h2>
+    <p>Overloaded/interdependent properties:</p>
     <pre><code data-trim data-noescape>
 attendee.staffing
 attendee.badge_type == c.STAFF_BADGE
 attendee.ribbon == c.VOLUNTEER_RIBBON
     </code></pre>
 
-    <h2 class="fragment">Why is this bad?</h2>
+    <h2 class="fragment">Why is this an issue?</h2>
     <ol>
       <li class="fragment">Meaning is unclear both in code and in the user interface</li>
       <li class="fragment">Interdependent variables lead to fragile, hard to read code</li>
     </ol>
+
+    <aside class="notes">
+      Supporter vs. extra donation vs. kick-in vs. badge type vs. ribbon
+    </aside>
   </section>
 
   <section>
-    <h1>Pain points</h1>
-    <h2>The Issue</h2>
-    Unneccesary multithreading:
+    <h1>Pain Points</h1>
+    <h2>The issue</h2>
+    <p>Unneccesary multithreading:</p>
+
     <pre><code data-trim data-noescape>
 DaemonTask(SendAllAutomatedEmailsJob.send_all_emails, interval=300, name="send emails")
     </code></pre>
-
-    <h2 class="fragment">Why is this bad?</h2>
+    <h2 class="fragment">Why is this an issue?</h2>
     <ol>
       <li class="fragment">Makes load balancing impossible</li>
-      <li class="fragment"><code>BADGE_LOCK</code></li>
+      <li class="fragment"><code>BADGE_LOCK</code>!</li>
     </ol>
   </section>
 
   <section>
-    <h1>Pain points</h1>
-    <h2>The Issue</h2>
-    JSON APIs aren't exposed/use separate auth
+    <h1>Pain Points</h1>
+    <h2>The issue</h2>
+    <p>JSON APIs aren't exposed/use separate auth</p>
 
-    <h2 class="fragment">Why is this bad?</h2>
+    <h2 class="fragment">Why is this an issue?</h2>
     <ol>
       <li class="fragment">So much duplicated code</li>
       <li class="fragment">Can't just open it up because validations aren't part of the model</li>
@@ -179,25 +262,25 @@ DaemonTask(SendAllAutomatedEmailsJob.send_all_emails, interval=300, name="send e
   </section>
 
   <section>
-    <h1>Pain points</h1>
-    <h2>The Issue</h2>
-    JavaScript is sprinkled all over the place, never linted, never minified
+    <h1>Pain Points</h1>
+    <h2>The issue</h2>
+    <p>JavaScript is sprinkled all over the place, never linted, never minified</p>
 
-    <h2 class="fragment">Why is this bad?</h2>
+    <h2 class="fragment">Why is this an issue?</h2>
     <ol>
       <li class="fragment">Super scary</li>
       <li class="fragment">Super fragile</li>
       <li class="fragment">Who knows what we're doing where?</li>
-      <li class="fragment">We're currently serving `angular.js` with the preregistration form!!!</li>
+      <li class="fragment">We're currently serving <code>angular.js</code> with the preregistration form!</li>
     </ol>
   </section>
 
   <section>
-    <h1>Pain points</h1>
-    <h2>The Issue</h2>
-    Plugin architecture
+    <h1>Pain Points</h1>
+    <h2>The issue</h2>
+    <p>Plugin architecture</p>
 
-    <h2 class="fragment">Why is this bad?</h2>
+    <h2 class="fragment">Why is this an issue?</h2>
     <ol>
       <li class="fragment">
         Complexity multiplier
@@ -212,11 +295,11 @@ DaemonTask(SendAllAutomatedEmailsJob.send_all_emails, interval=300, name="send e
   </section>
 
   <section>
-    <h1>Pain points</h1>
-    <h2>The Issue</h2>
-    Event configuration stored in config files
+    <h1>Pain Points</h1>
+    <h2>The issue</h2>
+    <p>Event configuration stored in config files</p>
 
-    <h2 class="fragment">Why is this bad?</h2>
+    <h2 class="fragment">Why is this an issue?</h2>
     <ol>
       <li class="fragment">
         Two kinds of config:
@@ -226,17 +309,18 @@ DaemonTask(SendAllAutomatedEmailsJob.send_all_emails, interval=300, name="send e
         </ul>
       </li>
       <li class="fragment">Changing event config requires a developer</li>
+      <li class="fragment">Changing event config requires a redeployment</li>
       <li class="fragment">Difficult to integrate our software into an existing ecosystem</li>
       <li class="fragment"><code>c</code> variable is not great</li>
     </ol>
   </section>
 
   <section>
-    <h1>Pain points</h1>
-    <h2>The Issue</h2>
-    Naming bifurcation (Ubersystem vs RAMS)
+    <h1>Pain Points</h1>
+    <h2>The issue</h2>
+    <p>Naming bifurcation (Ubersystem vs RAMS)</p>
 
-    <h2 class="fragment">Why is this bad?</h2>
+    <h2 class="fragment">Why is this an issue?</h2>
     <blockquote class="fragment text-normal" cite="https://github.com/magfest/ubersystem">
 <h3>IMPORTANT NOTE</h3>
 This is a fork of the RAMS Project used by MAGFest. It may contain
@@ -248,6 +332,214 @@ project at https://github.com/ramsproject/rams
 </section>
 
 <section>
+  <section>
+    <h1>Refactor</h1>
+    <p>Currently we have 15 plugins:</p>
+    <div class="clearfix"></div>
+    <ul class="text-sm col-4">
+      <li>attendee_tournaments</li>
+      <li>bands</li>
+      <li>barcode</li>
+      <li>hotel</li>
+      <li>magclassic</li>
+    </ul>
+    <ul class="text-sm col-4">
+      <li>magfest</li>
+      <li>magprime</li>
+      <li>magstock</li>
+      <li>magwest</li>
+      <li>mivs</li>
+    </ul>
+    <ul class="text-sm col-4">
+      <li>panels</li>
+      <li>reports</li>
+      <li>tabletop</li>
+      <li>uber</li>
+      <li>uber_analytics</li>
+    </ul>
+    <div class="clearfix"></div>
+  </section>
+
+  <section>
+    <h1>Refactor</h1>
+    <p>We have 4 deployment configurations:</p>
+    <div class="clearfix"></div>
+    <div class="col-3">
+      <h4>MAGFest</h4>
+      <ul class="text-sm">
+        <li>attendee_tournaments</li>
+        <li>bands</li>
+        <li>barcode</li>
+        <li>hotel</li>
+        <li>magfest</li>
+        <li class="fragment highlight-red" data-fragment-index="2">magprime <span class="fragment text-red" data-fragment-index="2">*</span></li>
+        <li>mivs</li>
+        <li>panels</li>
+        <li>reports</li>
+        <li>tabletop</li>
+        <li>uber</li>
+        <li>uber_analytics</li>
+      </ul>
+    </div>
+    <div class="col-3">
+      <h4>MAGLabs</h4>
+      <ul class="text-sm">
+        <li>attendee_tournaments</li>
+        <li>bands</li>
+        <li>barcode</li>
+        <li>hotel</li>
+        <li class="fragment highlight-red" data-fragment-index="2">magclassic <span class="fragment text-red" data-fragment-index="2">*</span></li>
+        <li>magfest</li>
+        <li class="fragment text-light" data-fragment-index="1">mivs</li>
+        <li>panels</li>
+        <li>reports</li>
+        <li>tabletop</li>
+        <li>uber</li>
+        <li>uber_analytics</li>
+      </ul>
+    </div>
+    <div class="col-3">
+      <h4>MAGStock</h4>
+      <ul class="text-sm">
+        <li class="fragment text-light" data-fragment-index="1">attendee_tournaments</li>
+        <li>bands</li>
+        <li>barcode</li>
+        <li class="fragment text-light" data-fragment-index="1">hotel</li>
+        <li>magfest</li>
+        <li class="fragment highlight-red" data-fragment-index="2">magstock <span class="fragment text-red" data-fragment-index="2">*</span></li>
+        <li class="fragment text-light" data-fragment-index="1">mivs</li>
+        <li>panels</li>
+        <li>reports</li>
+        <li class="fragment text-light" data-fragment-index="1">tabletop</li>
+        <li>uber</li>
+        <li>uber_analytics</li>
+      </ul>
+    </div>
+    <div class="col-3">
+      <h4>MAGWest</h4>
+      <ul class="text-sm">
+        <li>attendee_tournaments</li>
+        <li>bands</li>
+        <li>barcode</li>
+        <li>hotel</li>
+        <li>magfest</li>
+        <li class="fragment highlight-red" data-fragment-index="2">magwest <span class="fragment text-red" data-fragment-index="2">*</span></li>
+        <li>mivs</li>
+        <li>panels</li>
+        <li>reports</li>
+        <li>tabletop</li>
+        <li>uber</li>
+        <li>uber_analytics</li>
+      </ul>
+    </div>
+    <div class="clearfix"></div>
+    <p class="fragment text-sm text-red" data-fragment-index="2">* event specific plugins</p>
+  </section>
+
+  <section>
+    <h1>Refactor</h1>
+    <p>Of the event plugins, only <code>magprime</code> and <code>magstock</code> modify the database:</p>
+    <div class="col-6">
+      <h4>MAGPrime</h4>
+      <div class="panel service db text-xs">
+        <h1>prev_season_supporter</h1>
+        <ul>
+          <li>id</li>
+          <li>first_name</li>
+          <li>last_name</li>
+          <li>email</li>
+        </ul>
+      </div>
+      <div class="panel service db text-xs">
+        <h1>season_pass_ticket</h1>
+        <ul>
+          <li>id</li>
+          <li>fk_id</li>
+          <li>slug</li>
+        </ul>
+      </div>
+      <div class="panel service db text-xs">
+        <h1>attendee</h1>
+        <ul>
+          <li>extra_donation</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="col-6">
+      <h4>MAGStock</h4>
+      <div class="panel service db text-xs">
+        <h1>attendee</h1>
+        <ul>
+          <li>site_type</li>
+          <li>site_number</li>
+          <li>purchased_food</li>
+          <li>noise_level</li>
+          <li>license_plate</li>
+          <li>coming_with</li>
+          <li>coming_as</li>
+          <li>camping_type</li>
+          <li>allergies</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h1>Refactor</h1>
+    <p class="fragment fade-out" data-fragment-index="1">The structure of our deployments looks like this:</p>
+    <div class="col-8">
+      <div class="panel service block text-left text-sm">
+        <h1 class="fragment fade-out" data-fragment-index="1">Sideboard</h1>
+        <div class="panel folder block">
+          <h1 class="fragment fade-out" data-fragment-index="1">plugins</h1>
+          <ul class="col-6 fragment fade-out" data-fragment-index="1">
+            <li><div class="panel plugin"><h1>attendee_tournaments</h1></div></li>
+            <li><div class="panel plugin"><h1>bands</h1></div></li>
+            <li><div class="panel plugin"><h1>barcode</h1></div></li>
+            <li><div class="panel plugin"><h1>hotel</h1></div></li>
+            <li><div class="panel plugin"><h1>magfest</h1></div></li>
+            <li><div class="panel plugin"><h1>magprime</h1></div></li>
+          </ul>
+          <ul class="col-6">
+            <li><div class="panel plugin fragment fade-out" data-fragment-index="1"><h1>mivs</h1></div></li>
+            <li><div class="panel plugin fragment fade-out" data-fragment-index="1"><h1>panels</h1></div></li>
+            <li><div class="panel plugin fragment fade-out" data-fragment-index="1"><h1>reports</h1></div></li>
+            <li><div class="panel plugin fragment fade-out" data-fragment-index="1"><h1>tabletop</h1></div></li>
+            <li>
+              <div class="panel plugin">
+                <h1 class="inline-block">uber</h1>
+                <div class="panel file inline-block"><h1>development.ini</h1></div>
+              </div>
+            </li>
+            <li><div class="panel plugin fragment fade-out" data-fragment-index="1"><h1>uber_analytics</h1></div></li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-4">
+      <p class="text-sm fragment fade-in" data-fragment-index="1" style="margin-top: 75%">
+        95% of the work happens here
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h1>Refactor</h1>
+    <p class="text-lg text-mono"><span class="icon glyphicon-file"></span>reggie.cfg</p>
+    <pre><code data-trim data-noescape>
+aws_access_key = "abcxyz"
+aws_secret_key = "abcxyz"
+qr_code_password = "abcxyz"
+stripe_secret_key = "sk_test_abcxyz"
+stripe_public_key = "pk_test_abcxyz"
+
+[sqlalchemy]
+url = "postgresql://username:password@localhost:5432/database"
+    </code></pre>
+  </section>
+
   <section>
     <h1>Refactor</h1>
     <ul>
@@ -268,7 +560,6 @@ project at https://github.com/ramsproject/rams
   </section>
 </section>
 
-
       </div>
     </div>
 
@@ -276,6 +567,11 @@ project at https://github.com/ramsproject/rams
     <script src="js/reveal.js"></script>
 
     <script>
+      function hasClass(element, selector) {
+          var className = " " + selector + " ";
+          return (element.nodeType === 1 && (" " + element.className + " ").replace(/[\t\r\n]/g, " ").indexOf(className) >= 0);
+      }
+
       // More info https://github.com/hakimel/reveal.js#configuration
       Reveal.initialize({
         controls: true,
@@ -283,8 +579,8 @@ project at https://github.com/ramsproject/rams
         history: true,
         center: false,
 
-        width: '100%',
-        height: '100%',
+        width: 1600,
+        height: 900,
 
         transition: 'slide', // none/fade/slide/convex/concave/zoom
         transitionSpeed: 'fast', // default/fast/slow
@@ -299,6 +595,12 @@ project at https://github.com/ramsproject/rams
           { src: 'plugin/zoom-js/zoom.js', async: true },
           { src: 'plugin/notes/notes.js', async: true }
         ]
+      });
+
+      Reveal.addEventListener('fragmentshown', function(event) {
+        if (hasClass(event.fragment, 'fragment-bg-red')) {
+          console.log('fragment-bg-red')
+        }
       });
 
     </script>
