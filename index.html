@@ -27,12 +27,22 @@
     <![endif]-->
 
     <style>
+      /* Border Box */
       html { box-sizing: border-box; }
       *, *:before, *:after { box-sizing: inherit; }
 
+      /* Jumpy Fonts on Safari */
+      * { -webkit-transform-style: preserve-3d; }
+
+      /* Layout Classes */
+      .reveal .block { display: block; }
+      .reveal .clearfix { clear: both; }
+      .reveal .inline { display: inline; }
+      .reveal .inline-block { display: inline-block; }
       .reveal .pull-left { float: left; }
       .reveal .pull-right { float: right; }
 
+      /* Text Classes */
       .reveal .text-xl { font-size: 1.5em; }
       .reveal .text-lg { font-size: 1.25em; }
       .reveal .text-md { font-size: 1em; }
@@ -40,64 +50,107 @@
       .reveal .text-xs { font-size: 0.5em; }
       .reveal .text-mono { font-family: monospace; }
       .reveal .text-red { color: #ff0000; }
-      .reveal .text-light { color: #b0b0b0; }
-      .reveal .text-subtle { color: #808080; }
+      .reveal .text-light { opacity: 0.375; }
+      .reveal .text-subtle { opacity: 0.5; }
       .reveal .text-normal { font-style: normal; }
       .reveal .text-italic { font-style: italic; }
-      .reveal .text-left { text-align: left; }
+      .reveal .text-bold { font-weight: bold; }
       .reveal .text-center { text-align: center; }
+      .reveal .text-left { text-align: left; }
+      .reveal .text-right { text-align: right; }
 
-      .reveal .block { display: block; }
-      .reveal .inline { display: inline; }
-      .reveal .inline-block { display: inline-block; }
-      .reveal .clearfix { clear: both; }
-
+      /* Element Defaults */
       .reveal blockquote {
-        width: 90%
+        width: 90%;
+        padding: 0.5em;
+        background-color: #f8f8f8;
+      }
+
+      .reveal code {
+        padding-left: 0.25em;
+        padding-right: 0.25em;
       }
 
       .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
         text-transform: none;
       }
 
-      .reveal pre {
-        box-shadow: none;
-      }
-
-      .reveal code {
-        padding-left: 0.119em;
-        padding-right: 0.119em;
-      }
-
-      .reveal code, .reveal .panel {
-        background-color: rgba(50, 50, 50, 0.1);
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        border-radius: 3px;
-        color: #333;
-      }
-
-      .reveal .panel {
-        padding: 0.5em;
-        margin-bottom: 0.25em;
-      }
-
-      .reveal .panel ul { list-style: none; }
-      .reveal .panel h1, .reveal .panel h2, .reveal .panel h3,
-      .reveal .panel h4, .reveal .panel h5, .reveal .panel h6 {
-        margin-bottom: 0.24em;
-      }
-
-      .reveal .panel h1 { font-size: 1.25em; }
-
-      .reveal .service * { font-family: monospace; }
-
       .reveal ol, .reveal ul,
       .reveal ol ol, .reveal ol ul,
       .reveal ul ol, .reveal ul ul { margin: 0; }
       .reveal ol li, .reveal ul li { margin-left: 1.25em; }
 
+      .reveal .list-none { list-style: none; }
+      .reveal .list-none li { margin-left: 0; }
+
+      .reveal pre { box-shadow: none; }
       .reveal section { text-align: left; }
 
+      /* Monospace Font */
+      .reveal code, .reveal .plugin, .reveal .db, .reveal .service,
+      .reveal code *, .reveal .plugin *, .reveal .db *, .reveal .service * {
+        font-family: monospace;
+      }
+
+      /* Gray Block Backgrounds */
+      .reveal code, .reveal .panel, .reveal .plugin, .reveal .service {
+        background-color: #f0f0f0;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 3px;
+        color: #333;
+      }
+
+      .reveal .panel .panel,
+      .reveal .panel .plugin { background-color: #e0e0e0; }
+      .reveal .panel .panel .panel,
+      .reveal .panel .panel .plugin { background-color: #d0d0d0; }
+      .reveal .panel .panel .panel .panel,
+      .reveal .panel .panel .panel .plugin,
+      .reveal .panel .panel .plugin .panel { background-color: rgba(0, 0, 0, 0.1); }
+
+      /* Plugins */
+      .reveal .plugin { display: inline-block; }
+      .reveal .plugin, .reveal .service {
+        padding: 0 0.25em;
+      }
+
+      .reveal li .plugin {
+        margin-bottom: 0.25em;
+      }
+
+      .reveal .folder .plugin {
+        padding: 0.25em 0.5em;
+        display: block;
+      }
+
+      /* Panels */
+      .reveal .panel {
+        padding: 0.5em;
+        margin-bottom: 0.25em;
+      }
+
+      .reveal .panel:last-child {
+        margin-bottom: 0;
+      }
+
+      .reveal .plugin .panel {
+        margin-bottom: 0;
+        padding: 0.2em 0.5em;
+      }
+
+      .reveal .panel h1, .reveal .panel h2, .reveal .panel h3,
+      .reveal .panel h4, .reveal .panel h5, .reveal .panel h6 {
+        margin-bottom: 0.25em;
+      }
+
+      .reveal .panel h1 { font-size: 1.25em; }
+
+      .panel ul { list-style: none; }
+      .panel .panel { font-size: 0.75em; margin-left: 1.25em; }
+      .panel li .panel { margin-left: 0; }
+      .panel .panel li { margin-left: 0; }
+
+      /* Columns */
       .reveal .col-1, .reveal .col-2, .reveal .col-3, .reveal .col-4,
       .reveal .col-5, .reveal .col-6, .reveal .col-7, .reveal .col-8,
       .reveal .col-9, .reveal .col-10, .reveal .col-11, .reveal .col-12 {
@@ -120,16 +173,9 @@
       .reveal .col-11 { width: 91.6%; }
       .reveal .col-12 { width: 100%; }
 
-      .service .folder .plugin { padding: 0.25em 0.5em; }
-      .service .folder .plugin h1 { margin-bottom: 0; }
-
-      .panel .panel { font-size: 0.8em; margin-bottom: 0; margin-left: 1.25em; }
-      .panel .panel li { margin-left: 0; }
-      .panel li { margin-bottom: 0.25em; }
-      .panel li:last-child { margin-bottom: 0; }
-
+      /* Icons */
       .reveal .icon,
-      .reveal .panel h1::before {
+      .reveal .title::before {
         content: " ";
         background-repeat: no-repeat;
         background-size: 100% 100%;
@@ -140,11 +186,12 @@
         vertical-align: middle;
       }
 
-      .service > h1::before, .glyphicon-cogwheels { background-image: url(images/glyphicons/glyphicons-cogwheels.png); }
-      .db > h1::before, .glyphicon-database { background-image: url(images/glyphicons/glyphicons-database.png); }
-      .folder > h1::before, .glyphicon-folder { background-image: url(images/glyphicons/glyphicons-folder-open.png); }
-      .plugin > h1::before, .glyphicon-puzzle { background-image: url(images/glyphicons/glyphicons-puzzle.png); }
-      .file > h1::before, .glyphicon-file { background-image: url(images/glyphicons/glyphicons-file.png); }
+      .service > .title::before, .glyphicon-cogwheels { background-image: url(images/glyphicons/glyphicons-cogwheels.png); }
+      .db > .title::before, .glyphicon-database { background-image: url(images/glyphicons/glyphicons-database.png); }
+      .folder > .title::before, .glyphicon-folder { background-image: url(images/glyphicons/glyphicons-folder-open.png); }
+      .plugin > .title::before, .glyphicon-puzzle { background-image: url(images/glyphicons/glyphicons-puzzle.png); }
+      .file > .title::before, .glyphicon-file { background-image: url(images/glyphicons/glyphicons-file.png); }
+      .package > .title::before, .glyphicon-package { background-image: url(images/glyphicons/glyphicons-cube-black.png); }
     </style>
   </head>
 
@@ -182,24 +229,6 @@
   <section>
     <h1>Pain Points</h1>
     <h2>The issue</h2>
-    <p><code>common.py</code> and wildcard import statements:</p>
-    <pre><code data-trim data-noescape>
-from uber.common import *
-    </code></pre>
-
-    <h2 class="fragment">Why is this an issue?</h2>
-    <ol>
-      <li class="fragment">Circular dependencies</li>
-      <li class="fragment">Name collisions</li>
-      <li class="fragment">Static analysis via <code>flake8</code> is impossible</li>
-      <li class="fragment">It's straight up admonished in <code>pep8</code></li>
-      <li class="fragment">We're teaching bad habits to impressionable young programmers</li>
-    </ol>
-  </section>
-
-  <section>
-    <h1>Pain Points</h1>
-    <h2>The issue</h2>
     <p>Modules with import side effects:</p>
     <pre><code data-trim data-noescape>
 import sideboard
@@ -210,6 +239,40 @@ import sideboard
       <li class="fragment">Circular dependencies</li>
       <li class="fragment">Makes script writing difficult</li>
       <li class="fragment">Using a package as a library is impossible</li>
+      <li class="fragment">
+        Admonished in Google's <a href="https://google.github.io/styleguide/pyguide.html?showone=Main#Main">Python Style Guide</a>
+      </li>
+    </ol>
+  </section>
+
+  <section>
+    <h1>Pain Points</h1>
+    <h2>The issue</h2>
+    <p><code>common.py</code> and wildcard import statements:</p>
+    <pre><code data-trim data-noescape>
+from uber.common import *
+    </code></pre>
+
+    <h2 class="fragment">Why is this an issue?</h2>
+    <ol>
+      <li class="fragment">Circular dependencies</li>
+      <li class="fragment">Name collisions</li>
+      <li class="fragment">Static analysis via <code>flake8</code> is impossible</li>
+      <li class="fragment">It's straight up admonished in <a href="https://www.python.org/dev/peps/pep-0008/">pep8</a></li>
+      <li class="fragment">We're teaching bad habits to impressionable young programmers</li>
+    </ol>
+  </section>
+
+  <section>
+    <h1>Pain Points</h1>
+    <h2>The issue</h2>
+    <p>JavaScript is sprinkled all over the place, never linted, never minified</p>
+
+    <h2 class="fragment">Why is this an issue?</h2>
+    <ol>
+      <li class="fragment">Super scary, super fragile</li>
+      <li class="fragment">Who knows what we're doing where?</li>
+      <li class="fragment">We're currently serving <code>angular.js</code> with the preregistration form!</li>
     </ol>
   </section>
 
@@ -252,26 +315,12 @@ DaemonTask(SendAllAutomatedEmailsJob.send_all_emails, interval=300, name="send e
   <section>
     <h1>Pain Points</h1>
     <h2>The issue</h2>
-    <p>JSON APIs aren't exposed/use separate auth</p>
+    <p>Validations are not intrinsic to our data model</p>
 
     <h2 class="fragment">Why is this an issue?</h2>
     <ol>
-      <li class="fragment">So much duplicated code</li>
-      <li class="fragment">Can't just open it up because validations aren't part of the model</li>
-    </ol>
-  </section>
-
-  <section>
-    <h1>Pain Points</h1>
-    <h2>The issue</h2>
-    <p>JavaScript is sprinkled all over the place, never linted, never minified</p>
-
-    <h2 class="fragment">Why is this an issue?</h2>
-    <ol>
-      <li class="fragment">Super scary</li>
-      <li class="fragment">Super fragile</li>
-      <li class="fragment">Who knows what we're doing where?</li>
-      <li class="fragment">We're currently serving <code>angular.js</code> with the preregistration form!</li>
+      <li class="fragment">Easy to forget to run validations</li>
+      <li class="fragment">We're unable to expose our JSON API</li>
     </ol>
   </section>
 
@@ -286,8 +335,9 @@ DaemonTask(SendAllAutomatedEmailsJob.send_all_emails, interval=300, name="send e
         Complexity multiplier
         <ul>
           <li class="fragment">Multiple repositories</li>
-          <li class="fragment">Database migrations</li>
+          <li class="fragment">Difficult to maintain a <code>stable</code> branch</li>
           <li class="fragment">Configuration management</li>
+          <li class="fragment">Database migrations</li>
         </ul>
       </li>
       <li class="fragment">No clear value added</li>
@@ -322,11 +372,13 @@ DaemonTask(SendAllAutomatedEmailsJob.send_all_emails, interval=300, name="send e
 
     <h2 class="fragment">Why is this an issue?</h2>
     <blockquote class="fragment text-normal" cite="https://github.com/magfest/ubersystem">
-<h3>IMPORTANT NOTE</h3>
-This is a fork of the RAMS Project used by MAGFest. It may contain
-MAGFest-specific modifications and some less well-tested code. We recommend,
-unless you are actively developing for MAGFest, that you visit the parent
-project at https://github.com/ramsproject/rams
+<h3 class="inline-block">IMPORTANT NOTE</h3><a class="text-xs pull-right">https://github.com/magfest/ubersystem</a>
+<div>
+  This is a fork of the RAMS Project used by MAGFest. It may contain
+  MAGFest-specific modifications and some less well-tested code. We recommend,
+  unless you are actively developing for MAGFest, that you visit the parent
+  project at https://github.com/ramsproject/rams
+</div>
     </blockquote>
   </section>
 </section>
@@ -334,30 +386,39 @@ project at https://github.com/ramsproject/rams
 <section>
   <section>
     <h1>Refactor</h1>
-    <p>Currently we have 15 plugins:</p>
+    <p>Currently we have 15 plugins, in 15 repositories:</p>
     <div class="clearfix"></div>
-    <ul class="text-sm col-4">
-      <li>attendee_tournaments</li>
-      <li>bands</li>
-      <li>barcode</li>
-      <li>hotel</li>
-      <li>magclassic</li>
+    <ul class="text-sm col-4 list-none">
+      <li><div class="plugin"><span class="title">attendee_tournaments</span></div></li>
+      <li><div class="plugin"><span class="title">bands</span></div></li>
+      <li>
+        <div class="plugin"><span class="title">barcode</span></div>
+        <span class="fragment text-red">github.com/rams?!</span>
+      </li>
+      <li><div class="plugin"><span class="title">hotel</span></div></li>
+      <li><div class="plugin"><span class="title">magclassic</span></div></li>
     </ul>
-    <ul class="text-sm col-4">
-      <li>magfest</li>
-      <li>magprime</li>
-      <li>magstock</li>
-      <li>magwest</li>
-      <li>mivs</li>
+    <ul class="text-sm col-4 list-none">
+      <li><div class="plugin"><span class="title">magfest</span></div></li>
+      <li><div class="plugin"><span class="title">magprime</span></div></li>
+      <li><div class="plugin"><span class="title">magstock</span></div></li>
+      <li><div class="plugin"><span class="title">magwest</span></div></li>
+      <li><div class="plugin"><span class="title">mivs</span></div></li>
     </ul>
-    <ul class="text-sm col-4">
-      <li>panels</li>
-      <li>reports</li>
-      <li>tabletop</li>
-      <li>uber</li>
-      <li>uber_analytics</li>
+    <ul class="text-sm col-4 list-none">
+      <li><div class="plugin"><span class="title">panels</span></div></li>
+      <li><div class="plugin"><span class="title">reports</span></div></li>
+      <li><div class="plugin"><span class="title">tabletop</span></div></li>
+      <li><div class="plugin"><span class="title">uber</span></div></li>
+      <li><div class="plugin"><span class="title">uber_analytics</span></div></li>
     </ul>
     <div class="clearfix"></div>
+    <div class="fragment">
+      <p>Additionally we have our own application server:</p>
+      <ul class="text-sm col-4 list-none">
+        <li><div class="service inline-block"><span class="title">sideboard</span></div></li>
+      </ul>
+    </div>
   </section>
 
   <section>
@@ -366,83 +427,292 @@ project at https://github.com/ramsproject/rams
     <div class="clearfix"></div>
     <div class="col-3">
       <h4>MAGFest</h4>
-      <ul class="text-sm">
-        <li>attendee_tournaments</li>
-        <li>bands</li>
-        <li>barcode</li>
-        <li>hotel</li>
-        <li>magfest</li>
-        <li class="fragment highlight-red" data-fragment-index="2">magprime <span class="fragment text-red" data-fragment-index="2">*</span></li>
-        <li>mivs</li>
-        <li>panels</li>
-        <li>reports</li>
-        <li>tabletop</li>
-        <li>uber</li>
-        <li>uber_analytics</li>
+      <ul class="text-xs list-none">
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">attendee_tournaments</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">bands</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">barcode</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">hotel</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">magfest</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment grow" data-fragment-index="2">
+            <div class="plugin"><span class="title">magprime</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">mivs</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">panels</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">reports</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">tabletop</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">uber</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">uber_analytics</span></div>
+          </div>
+        </li>
       </ul>
     </div>
     <div class="col-3">
       <h4>MAGLabs</h4>
-      <ul class="text-sm">
-        <li>attendee_tournaments</li>
-        <li>bands</li>
-        <li>barcode</li>
-        <li>hotel</li>
-        <li class="fragment highlight-red" data-fragment-index="2">magclassic <span class="fragment text-red" data-fragment-index="2">*</span></li>
-        <li>magfest</li>
-        <li class="fragment text-light" data-fragment-index="1">mivs</li>
-        <li>panels</li>
-        <li>reports</li>
-        <li>tabletop</li>
-        <li>uber</li>
-        <li>uber_analytics</li>
+      <ul class="text-xs list-none">
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">attendee_tournaments</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">bands</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">barcode</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">hotel</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment grow" data-fragment-index="2">
+            <div class="plugin"><span class="title">magclassic</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">magfest</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment" data-fragment-index="1">
+            <div class="fragment fade-out" data-fragment-index="2">
+              <div class="plugin text-light"><span class="title">mivs</span></div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">panels</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">reports</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">tabletop</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">uber</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">uber_analytics</span></div>
+          </div>
+        </li>
       </ul>
     </div>
     <div class="col-3">
       <h4>MAGStock</h4>
-      <ul class="text-sm">
-        <li class="fragment text-light" data-fragment-index="1">attendee_tournaments</li>
-        <li>bands</li>
-        <li>barcode</li>
-        <li class="fragment text-light" data-fragment-index="1">hotel</li>
-        <li>magfest</li>
-        <li class="fragment highlight-red" data-fragment-index="2">magstock <span class="fragment text-red" data-fragment-index="2">*</span></li>
-        <li class="fragment text-light" data-fragment-index="1">mivs</li>
-        <li>panels</li>
-        <li>reports</li>
-        <li class="fragment text-light" data-fragment-index="1">tabletop</li>
-        <li>uber</li>
-        <li>uber_analytics</li>
+      <ul class="text-xs list-none">
+        <li>
+          <div class="fragment" data-fragment-index="1">
+            <div class="fragment fade-out" data-fragment-index="2">
+              <div class="plugin text-light"><span class="title">attendee_tournaments</span></div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">bands</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">barcode</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment" data-fragment-index="1">
+            <div class="fragment fade-out" data-fragment-index="2">
+              <div class="plugin text-light"><span class="title">hotel</span></div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">magfest</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment grow" data-fragment-index="2">
+            <div class="plugin"><span class="title">magstock</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment" data-fragment-index="1">
+            <div class="fragment fade-out" data-fragment-index="2">
+              <div class="plugin text-light"><span class="title">mivs</span></div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">panels</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">reports</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment" data-fragment-index="1">
+            <div class="fragment fade-out" data-fragment-index="2">
+              <div class="plugin text-light"><span class="title">tabletop</span></div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">uber</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">uber_analytics</span></div>
+          </div>
+        </li>
       </ul>
     </div>
     <div class="col-3">
       <h4>MAGWest</h4>
-      <ul class="text-sm">
-        <li>attendee_tournaments</li>
-        <li>bands</li>
-        <li>barcode</li>
-        <li>hotel</li>
-        <li>magfest</li>
-        <li class="fragment highlight-red" data-fragment-index="2">magwest <span class="fragment text-red" data-fragment-index="2">*</span></li>
-        <li>mivs</li>
-        <li>panels</li>
-        <li>reports</li>
-        <li>tabletop</li>
-        <li>uber</li>
-        <li>uber_analytics</li>
+      <ul class="text-xs list-none">
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">attendee_tournaments</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">bands</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">barcode</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">hotel</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">magfest</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment grow" data-fragment-index="2">
+            <div class="plugin"><span class="title">magwest</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">mivs</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">panels</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">reports</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">tabletop</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">uber</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="fragment fade-out" data-fragment-index="2">
+            <div class="plugin"><span class="title">uber_analytics</span></div>
+          </div>
+        </li>
       </ul>
     </div>
     <div class="clearfix"></div>
-    <p class="fragment text-sm text-red" data-fragment-index="2">* event specific plugins</p>
+    <p class="fragment text-lg" data-fragment-index="2">
+      Only real differences come from the event plugins
+    </p>
   </section>
 
   <section>
     <h1>Refactor</h1>
-    <p>Of the event plugins, only <code>magprime</code> and <code>magstock</code> modify the database:</p>
+    <p>
+      Of the event plugins, only
+      <span class="plugin"><span class="title">magprime</span></span> and
+      <span class="plugin"><span class="title">magstock</span></span>
+      modify the database:
+    </p>
     <div class="col-6">
-      <h4>MAGPrime</h4>
-      <div class="panel service db text-xs">
-        <h1>prev_season_supporter</h1>
+      <h4>MAGFest</h4>
+      <div class="panel db text-xs">
+        <h1 class="title">prev_season_supporter</h1>
         <ul>
           <li>id</li>
           <li>first_name</li>
@@ -450,16 +720,16 @@ project at https://github.com/ramsproject/rams
           <li>email</li>
         </ul>
       </div>
-      <div class="panel service db text-xs">
-        <h1>season_pass_ticket</h1>
+      <div class="panel db text-xs">
+        <h1 class="title">season_pass_ticket</h1>
         <ul>
           <li>id</li>
           <li>fk_id</li>
           <li>slug</li>
         </ul>
       </div>
-      <div class="panel service db text-xs">
-        <h1>attendee</h1>
+      <div class="panel db text-xs">
+        <h1 class="title">attendee</h1>
         <ul>
           <li>extra_donation</li>
         </ul>
@@ -468,8 +738,8 @@ project at https://github.com/ramsproject/rams
 
     <div class="col-6">
       <h4>MAGStock</h4>
-      <div class="panel service db text-xs">
-        <h1>attendee</h1>
+      <div class="panel db text-xs">
+        <h1 class="title">attendee</h1>
         <ul>
           <li>site_type</li>
           <li>site_number</li>
@@ -487,39 +757,49 @@ project at https://github.com/ramsproject/rams
 
   <section>
     <h1>Refactor</h1>
-    <p class="fragment fade-out" data-fragment-index="1">The structure of our deployments looks like this:</p>
-    <div class="col-8">
+    <p class="fragment fade-out" data-fragment-index="4">The structure of our deployments looks like this:</p>
+    <div class="col-7">
       <div class="panel service block text-left text-sm">
-        <h1 class="fragment fade-out" data-fragment-index="1">Sideboard</h1>
-        <div class="panel folder block">
-          <h1 class="fragment fade-out" data-fragment-index="1">plugins</h1>
-          <ul class="col-6 fragment fade-out" data-fragment-index="1">
-            <li><div class="panel plugin"><h1>attendee_tournaments</h1></div></li>
-            <li><div class="panel plugin"><h1>bands</h1></div></li>
-            <li><div class="panel plugin"><h1>barcode</h1></div></li>
-            <li><div class="panel plugin"><h1>hotel</h1></div></li>
-            <li><div class="panel plugin"><h1>magfest</h1></div></li>
-            <li><div class="panel plugin"><h1>magprime</h1></div></li>
-          </ul>
-          <ul class="col-6">
-            <li><div class="panel plugin fragment fade-out" data-fragment-index="1"><h1>mivs</h1></div></li>
-            <li><div class="panel plugin fragment fade-out" data-fragment-index="1"><h1>panels</h1></div></li>
-            <li><div class="panel plugin fragment fade-out" data-fragment-index="1"><h1>reports</h1></div></li>
-            <li><div class="panel plugin fragment fade-out" data-fragment-index="1"><h1>tabletop</h1></div></li>
-            <li>
-              <div class="panel plugin">
-                <h1 class="inline-block">uber</h1>
-                <div class="panel file inline-block"><h1>development.ini</h1></div>
-              </div>
-            </li>
-            <li><div class="panel plugin fragment fade-out" data-fragment-index="1"><h1>uber_analytics</h1></div></li>
-          </ul>
+        <h1 class="title inline-block fragment fade-out" data-fragment-index="4">sideboard</h1>
+        <span class=" fragment fade-out" data-fragment-index="4">
+          <div class="panel file inline-block pull-right fragment fade-in" data-fragment-index="0">
+            <span class="title">development.ini</span>
+          </div>
+        </span>
+        <div class="panel folder block fragment fade-in" data-fragment-index="1">
+          <h1 class="title fragment fade-out" data-fragment-index="4">plugins</h1>
+          <div class="fragment fade-in" data-fragment-index="2">
+            <ul class="col-6 fragment fade-out" data-fragment-index="4">
+              <li><div class="plugin"><span class="title">attendee_tournaments</span></div></li>
+              <li><div class="plugin"><span class="title">bands</span></div></li>
+              <li><div class="plugin"><span class="title">barcode</span></div></li>
+              <li><div class="plugin"><span class="title">hotel</span></div></li>
+              <li><div class="plugin"><span class="title">magfest</span></div></li>
+              <li><div class="plugin"><span class="title">magprime</span></div></li>
+            </ul>
+            <ul class="col-6">
+              <li><div class="plugin fragment fade-out" data-fragment-index="4"><span class="title">mivs</span></div></li>
+              <li><div class="plugin fragment fade-out" data-fragment-index="4"><span class="title">panels</span></div></li>
+              <li><div class="plugin fragment fade-out" data-fragment-index="4"><span class="title">reports</span></div></li>
+              <li><div class="plugin fragment fade-out" data-fragment-index="4"><span class="title">tabletop</span></div></li>
+              <li>
+                <div class="plugin fragment grow" data-fragment-index="4">
+                  <span class="title">uber</span>
+                  <div class="panel file inline-block pull-right fragment fade-in" data-fragment-index="3">
+                    <span class="title">development.ini</span>
+                  </div>
+                  <div class="clearfix"></div>
+                </div>
+              </li>
+              <li><div class="plugin fragment fade-out" data-fragment-index="4"><span class="title">uber_analytics</span></div></li>
+            </ul>
+          </div>
           <div class="clearfix"></div>
         </div>
       </div>
     </div>
-    <div class="col-4">
-      <p class="text-sm fragment fade-in" data-fragment-index="1" style="margin-top: 75%">
+    <div class="col-5">
+      <p class="fragment fade-in" data-fragment-index="4" style="margin-top: 58%">
         95% of the work happens here
       </p>
     </div>
@@ -527,13 +807,69 @@ project at https://github.com/ramsproject/rams
 
   <section>
     <h1>Refactor</h1>
-    <p class="text-lg text-mono"><span class="icon glyphicon-file"></span>reggie.cfg</p>
+    <p>A complete rewrite is almost always a bad idea, but what about...</p>
+    <div class="col-7">
+      <div class="panel service block text-left text-sm">
+        <h1 class="title fragment fade-in" data-fragment-index="0">Ubersystem</h1>
+        <div class="panel package block fragment fade-in" data-fragment-index="1">
+          <h1 class="title">python modules</h1>
+          <ul class="col-6">
+            <li>uber</li>
+            <li>uber.analytics</li>
+            <li>uber.attendee_tournaments</li>
+            <li>uber.bands</li>
+            <li>uber.barcode</li>
+            <li>uber.core</li>
+          </ul>
+          <ul class="col-6">
+            <li>uber.hotel</li>
+            <li>uber.magfest</li>
+            <li>uber.mivs</li>
+            <li>uber.panels</li>
+            <li>uber.reports</li>
+            <li>uber.tabletop</li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="panel file block fragment fade-in" data-fragment-index="2">
+          <h1 class="title">requirements.txt</h1>
+          <div class="col-12">sideboard>=1.0</div>
+          <div class="clearfix"></div>
+        </div>
+        <div class="panel file block fragment fade-in" data-fragment-index="3">
+          <h1 class="title">ubersystem.cfg</h1>
+        </div>
+      </div>
+    </div>
+    <div class="col-5 text-sm">
+      <p class="fragment fade-in" data-fragment-index="0">
+        Single repository, single installer
+      </p>
+      <p class="fragment fade-in" data-fragment-index="1">
+        Plugins converted to regular python modules
+      </p>
+      <p class="fragment fade-in" data-fragment-index="2" style="margin-top: 36%;">
+        Sideboard imported like a normal library
+      </p>
+      <p class="fragment fade-in" data-fragment-index="3" style="margin-top: 11%;">
+        Single config file
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h1>Refactor</h1>
+    <p class="text-lg text-mono"><span class="icon glyphicon-file"></span>ubersystem.cfg</p>
     <pre><code data-trim data-noescape>
 aws_access_key = "abcxyz"
 aws_secret_key = "abcxyz"
 qr_code_password = "abcxyz"
 stripe_secret_key = "sk_test_abcxyz"
 stripe_public_key = "pk_test_abcxyz"
+
+[cherrypy]
+server.socket_host = "127.0.0.1"
+server.socket_port = 8282
 
 [sqlalchemy]
 url = "postgresql://username:password@localhost:5432/database"
