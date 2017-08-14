@@ -2,8 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
     <title>Thoughts on Ubersystem</title>
 
@@ -18,7 +20,9 @@
       var link = document.createElement( 'link' );
       link.rel = 'stylesheet';
       link.type = 'text/css';
-      link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+      link.href = window.location.search.match( /print-pdf/gi ) ?
+          'css/print/pdf.css' :
+          'css/print/paper.css';
       document.getElementsByTagName( 'head' )[0].appendChild( link );
     </script>
 
@@ -246,12 +250,30 @@
         vertical-align: middle;
       }
 
-      .service > .title::before, .glyphicon-cogwheels { background-image: url(images/glyphicons/glyphicons-cogwheels.png); }
-      .db > .title::before, .glyphicon-database { background-image: url(images/glyphicons/glyphicons-database.png); }
-      .folder > .title::before, .glyphicon-folder { background-image: url(images/glyphicons/glyphicons-folder-open.png); }
-      .plugin > .title::before, .glyphicon-puzzle { background-image: url(images/glyphicons/glyphicons-puzzle.png); }
-      .file > .title::before, .glyphicon-file { background-image: url(images/glyphicons/glyphicons-file.png); }
-      .package > .title::before, .glyphicon-package { background-image: url(images/glyphicons/glyphicons-cube-black.png); }
+      .service > .title::before, .glyphicon-cogwheels {
+        background-image: url(images/glyphicons/glyphicons-cogwheels.png);
+      }
+
+      .db > .title::before, .glyphicon-database {
+        background-image: url(images/glyphicons/glyphicons-database.png);
+      }
+
+      .folder > .title::before, .glyphicon-folder {
+        background-image: url(images/glyphicons/glyphicons-folder-open.png);
+      }
+
+      .plugin > .title::before, .glyphicon-puzzle {
+        background-image: url(images/glyphicons/glyphicons-puzzle.png);
+      }
+
+      .file > .title::before, .glyphicon-file {
+        background-image: url(images/glyphicons/glyphicons-file.png);
+      }
+
+      .package > .title::before, .glyphicon-package {
+        background-image: url(images/glyphicons/glyphicons-cube-black.png);
+      }
+
     </style>
   </head>
 
@@ -327,9 +349,15 @@
   <section>
     <h1>Pain Points</h1>
     <div class="text-center">
-      <p class="fragment text-md">The tradition of Festivus begins with the airing of grievances.</p>
-      <p class="fragment text-lg">I got a lot of problems with you people...</p>
-      <p class="fragment text-xl">And now, you're gonna hear about it!</p>
+      <p class="fragment text-md">
+        The tradition of Festivus begins with the airing of grievances.
+      </p>
+      <p class="fragment text-lg">
+        I got a lot of problems with you people...
+      </p>
+      <p class="fragment text-xl">
+        And now, you're gonna hear about it!
+      </p>
     </div>
     <aside class="notes">
       After putting this presentation together, I realized I spent the first
@@ -537,10 +565,34 @@ DaemonTask(SendAllAutomatedEmailsJob.send_all_emails, interval=300, name="send e
     <h1>Pain Points</h1>
     <h2>The issue</h2>
     <p>Sessions stored on filesystem</p>
-    <h2 class="fragment">Why is this an issue?</h2>
+
+    <aside class="notes">
+      Currently, we use the filesystem to store cherrypy's session data.
+    </aside>
+
+    <h2 class="fragment">
+      Why is this an issue?
+      <aside class="notes">
+        So, why is this an issue?
+      </aside>
+    </h2>
     <ol>
-      <li class="fragment">Makes load balancing impossible</li>
-      <li class="fragment">Super easy to change</li>
+      <li class="fragment">
+        Makes load balancing more difficult
+        <aside class="notes">
+          Well, it makes load balancing more difficult. Our only option would
+          be to mount a shared filesystem to store the session files.
+        </aside>
+      </li>
+      <li class="fragment">
+        Super easy to change
+        <aside class="notes">
+          Everyone likes to bring this up as a big issue, but the reality is
+          that this would be super easy to change. It's literally just a
+          cherrypy config setting. But until we fix the issue with background
+          threads, changing this won't really buy us anything.
+        </aside>
+      </li>
     </ol>
   </section>
 
@@ -549,10 +601,43 @@ DaemonTask(SendAllAutomatedEmailsJob.send_all_emails, interval=300, name="send e
     <h2>The issue</h2>
     <p>Validations are not intrinsic to our data model</p>
 
-    <h2 class="fragment">Why is this an issue?</h2>
+    <aside class="notes">
+      The next issue I want to talk about is that our validations are not
+      intrinsic to our data model. What this means is that the code we use to
+      verify the correctness of our data lives in a separate module from the
+      code that defines our data model.
+      <br><br>
+      In order to validate a model object, we have to manually call a
+      validation check.
+    </aside>
+
+    <h2 class="fragment">
+      Why is this an issue?
+      <aside class="notes">
+        Again, everything seems to be working fine, so why is this an issue?
+      </aside>
+    </h2>
     <ol>
-      <li class="fragment">Easy to forget to run validations</li>
-      <li class="fragment">We're unable to expose our JSON API</li>
+      <li class="fragment">
+        Easy to forget to run validations
+        <aside class="notes">
+          First, it's easy to forget to run the validation checks. I'm like 90%
+          sure that there are places in our codebase where we are just not
+          validating incoming data. Aside from unit tests, we have no easy way
+          of detecting that. And our test coverage is not great.
+        </aside>
+      </li>
+      <li class="fragment">
+        We're unable to expose our JSON API
+        <aside class="notes">
+          But the real issue with the way we run our validations is that we
+          can't expose our JSON API. Our JSON API completely bypasses our
+          validations.
+          <br><br>
+          Until we integrate our validations into our data model, our hands
+          are essentially tied.
+        </aside>
+      </li>
     </ol>
   </section>
 
@@ -561,19 +646,111 @@ DaemonTask(SendAllAutomatedEmailsJob.send_all_emails, interval=300, name="send e
     <h2>The issue</h2>
     <p>Plugin architecture</p>
 
-    <h2 class="fragment">Why is this an issue?</h2>
+    <aside class="notes">
+      This is a big issue. There's nothing inherently wrong with our plugin
+      architecture. In fact, from a technical perspective, it's actually
+      really cool.
+    </aside>
+
+    <h2 class="fragment">
+      Why is this an issue?
+
+      <aside class="notes">
+        So why even bring it up? Well, it's a complex design whos
+        consequences are varied and manifold. It doesn't cause one big problem.
+        Instead it's a bunch of tiny annoyances that exhaust development time
+        and mental energy.
+        <br><br>
+        It's death by a thousand cuts.
+      </aside>
+    </h2>
     <ol>
       <li class="fragment">
         Complexity multiplier
+        <aside class="notes">
+          The easiest way to describe it, is as a complexity multiplier. It
+          makes every task more complex and error prone.
+        </aside>
         <ul>
-          <li class="fragment">Multiple repositories</li>
-          <li class="fragment">Difficult to maintain a <code>stable</code> branch</li>
-          <li class="fragment">Basic project management/issue tracking tasks become arduous, like using labels</li>
-          <li class="fragment">Configuration management nightmare</li>
-          <li class="fragment">Database migrations overly complex</li>
+          <li class="fragment">
+            Multiple repositories
+            <aside class="notes">
+              To start with, we have multiple git repositories. So for many of
+              our bug fixes, we don't have just <em>one</em> branch with
+              <em>one</em> pull request. We have to create a separate pull
+              request for each repository involved in the bug fix. Bug fixes
+              and features often require changes to two, three, four, even up
+              to <em>fifteen</em> repositories in some cases.
+              <br><br>
+              It's definitely do-able, as evidenced by the fact that we've
+              been, you know... doing it. But it's been the source of bugs,
+              and it takes mental energy.
+            </aside>
+          </li>
+          <li class="fragment">
+            Difficult to maintain a <code>stable</code> branch
+            <aside class="notes">
+              It makes it difficult to maintain a <code>stable</code> branch.
+              It would be nice if we could run our production servers off a
+              stable branch in git, but synchronizing that across so many
+              repositories and so many deployments would be a nightmare.
+              <br><br>
+              <em>This</em> commit in <em>this</em> repository, depends on this
+              <em>other</em> commit in this <em>other</em> repository.
+              Someone's gonna mess that up at some point, and we'd inevitably
+              deploy a broken configuration to production.
+              <br><br>
+              Talk about exhausting mental energy.
+            </aside>
+          </li>
+          <li class="fragment">
+            Basic project management/issue tracking tasks become arduous, like using labels
+            <aside class="notes">
+              Basic project management tasks become arduous. Things like:
+              sharing labels or epics between repositories. Collecting and
+              prioritizing issues across repositories. Basic task tracking.
+              <br><br>
+              This is mainly a shortcoming of the issue tracking built into
+              GitHub, but it's still a limitation we gotta live with.
+            </aside>
+          </li>
+          <li class="fragment">
+            Configuration management nightmare
+            <aside class="notes">
+              Like every other part of the system, it increases the complexity
+              of our configuration management. Our production config has to
+              manage 15 times the number of repositories and config files.
+              <br><br>
+              Which – sure – is not <em>that</em> complicated. It's just a lot
+              of unneeded boilerplate that we could cut out.
+            </aside>
+          </li>
+          <li class="fragment">
+            Database migrations overly complex
+            <aside class="notes">
+              I'm going to call this feature out specifically, but it has the
+              same impact on a lot of other features we create. Our database
+              migrations are insanely complex. Each plugin has it's own
+              migration branch, that creates this complex tree of
+              interdependent scripts.
+              <br><br>
+              I mean – don't get me wrong – it works beautifully. Now that it's
+              built, it's totally great, and totally easy to use. But getting
+              database migrations set up correctly the first time around took
+              about five times longer than it would have otherwise, because of
+              our complex plugin architecture.
+            </aside>
+          </li>
         </ul>
       </li>
-      <li class="fragment">No clear value added</li>
+      <li class="fragment">
+        No clear value added
+        <aside class="notes">
+          And here's the hook. For all the added complexity, there's no clear
+          value added. What do we actually gain from our plugin architecture?
+          I've yet to see any real benefit.
+        </aside>
+      </li>
     </ol>
   </section>
 
@@ -581,6 +758,12 @@ DaemonTask(SendAllAutomatedEmailsJob.send_all_emails, interval=300, name="send e
     <h1>Pain Points</h1>
     <h2>The issue</h2>
     <p>Event configuration stored in config files</p>
+
+    <aside class="notes">
+      This is probably the least controversial issue that I'm going to bring
+      up. We store all of our event configuration in config files instead of in
+      the database.
+    </aside>
 
     <h2 class="fragment">Why is this an issue?</h2>
     <ol>
@@ -605,7 +788,8 @@ DaemonTask(SendAllAutomatedEmailsJob.send_all_emails, interval=300, name="send e
 
     <h2 class="fragment">Why is this an issue?</h2>
     <blockquote class="fragment text-normal" cite="https://github.com/magfest/ubersystem">
-<h3 class="inline-block">IMPORTANT NOTE</h3><a class="text-xs pull-right">https://github.com/magfest/ubersystem</a>
+<h3 class="inline-block">IMPORTANT NOTE</h3>
+<a class="text-xs pull-right">https://github.com/magfest/ubersystem</a>
 <div>
   This is a fork of the RAMS Project used by MAGFest. It may contain
   MAGFest-specific modifications and some less well-tested code. We recommend,
@@ -1003,18 +1187,58 @@ DaemonTask(SendAllAutomatedEmailsJob.send_all_emails, interval=300, name="send e
           <h1 class="title fragment fade-out" data-fragment-index="4">plugins</h1>
           <div class="fragment fade-in" data-fragment-index="2">
             <ul class="col-6 fragment fade-out" data-fragment-index="4">
-              <li><div class="plugin"><span class="title">attendee_tournaments</span></div></li>
-              <li><div class="plugin"><span class="title">bands</span></div></li>
-              <li><div class="plugin"><span class="title">barcode</span></div></li>
-              <li><div class="plugin"><span class="title">hotel</span></div></li>
-              <li><div class="plugin"><span class="title">magfest</span></div></li>
-              <li><div class="plugin"><span class="title">magprime</span></div></li>
+              <li>
+                <div class="plugin">
+                  <span class="title">attendee_tournaments</span>
+                </div>
+              </li>
+              <li>
+                <div class="plugin">
+                  <span class="title">bands</span>
+                </div>
+              </li>
+              <li>
+                <div class="plugin">
+                  <span class="title">barcode</span>
+                </div>
+              </li>
+              <li>
+                <div class="plugin">
+                  <span class="title">hotel</span>
+                </div>
+              </li>
+              <li>
+                <div class="plugin">
+                  <span class="title">magfest</span>
+                </div>
+              </li>
+              <li>
+                <div class="plugin">
+                  <span class="title">magprime</span>
+                </div>
+              </li>
             </ul>
             <ul class="col-6">
-              <li><div class="plugin fragment fade-out" data-fragment-index="4"><span class="title">mivs</span></div></li>
-              <li><div class="plugin fragment fade-out" data-fragment-index="4"><span class="title">panels</span></div></li>
-              <li><div class="plugin fragment fade-out" data-fragment-index="4"><span class="title">reports</span></div></li>
-              <li><div class="plugin fragment fade-out" data-fragment-index="4"><span class="title">tabletop</span></div></li>
+              <li>
+                <div class="plugin fragment fade-out" data-fragment-index="4">
+                  <span class="title">mivs</span>
+                </div>
+              </li>
+              <li>
+                <div class="plugin fragment fade-out" data-fragment-index="4">
+                  <span class="title">panels</span>
+                </div>
+              </li>
+              <li>
+                <div class="plugin fragment fade-out" data-fragment-index="4">
+                  <span class="title">reports</span>
+                </div>
+              </li>
+              <li>
+                <div class="plugin fragment fade-out" data-fragment-index="4">
+                  <span class="title">tabletop</span>
+                </div>
+              </li>
               <li>
                 <div class="plugin fragment grow" data-fragment-index="4">
                   <span class="title">uber</span>
@@ -1024,7 +1248,11 @@ DaemonTask(SendAllAutomatedEmailsJob.send_all_emails, interval=300, name="send e
                   <div class="clearfix"></div>
                 </div>
               </li>
-              <li><div class="plugin fragment fade-out" data-fragment-index="4"><span class="title">uber_analytics</span></div></li>
+              <li>
+                <div class="plugin fragment fade-out" data-fragment-index="4">
+                  <span class="title">uber_analytics</span>
+                </div>
+              </li>
             </ul>
           </div>
           <div class="clearfix"></div>
@@ -1134,14 +1362,14 @@ event_venue = "The Hyatt Regency"
 event_venue_address = "5101 Great America Pkwy"
 max_badge_sales = 20000
 student_discount = 10</span>
-
-<span class="fragment fade-in" data-fragment-index="4">[badge_ranges]
+<span class="fragment fade-in" data-fragment-index="4">
+[badge_ranges]
 staff_badge = 49, 199
 guest_badge = 200, 299
 attendee_badge = 300, 2299
 one_day_badge = 2300, 3199</span>
-
-<span class="fragment fade-in" data-fragment-index="6">[enums]
+<span class="fragment fade-in" data-fragment-index="6">
+[enums]
 [[job_location]]
 arcade = "Arcade"
 challenges = "Challenges"
@@ -1332,7 +1560,9 @@ dorsai = "Dorsai"</span>
               <td><span class="fragment fade-in" data-fragment-index="9">&nbsp;...&nbsp;</span></td>
               <td><span class="fragment fade-in" data-fragment-index="9">&nbsp;...&nbsp;</span></td>
               <td><span class="fragment fade-in" data-fragment-index="9">&nbsp;...&nbsp;</span></td>
-              <td class="fragment fade-in" data-fragment-index="8"><span class="fragment fade-in" data-fragment-index="9">527b039a...</span></td>
+              <td class="fragment fade-in" data-fragment-index="8">
+                <span class="fragment fade-in" data-fragment-index="9">527b039a...</span>
+              </td>
             </tr>
             <tr>
               <td></td>
@@ -1408,8 +1638,15 @@ dorsai = "Dorsai"</span>
       <li class="fragment">LDAP authentication</li>
       <li class="fragment">Pub/sub message queue</li>
       <li class="fragment">Web socket support</li>
+      <li class="fragment text-xl">To infinity and beyond!</li>
     </ol>
   </section>
+</section>
+
+<section class="text-center">
+  <h1>Questions?</h1>
+  <h1>Comments?</h1>
+  <h1>Growing concerns?</h1>
 </section>
 
       </div>
@@ -1421,7 +1658,8 @@ dorsai = "Dorsai"</span>
     <script>
       function hasClass(element, selector) {
           var className = " " + selector + " ";
-          return (element.nodeType === 1 && (" " + element.className + " ").replace(/[\t\r\n]/g, " ").indexOf(className) >= 0);
+          return (element.nodeType === 1 &&
+              (" " + element.className + " ").replace(/[\t\r\n]/g, " ").indexOf(className) >= 0);
       }
 
       // More info https://github.com/hakimel/reveal.js#configuration
@@ -1440,10 +1678,18 @@ dorsai = "Dorsai"</span>
 
         // More info https://github.com/hakimel/reveal.js#dependencies
         dependencies: [
-          { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
-          { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-          { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-          { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'lib/js/classList.js', condition: function() {
+            return !document.body.classList;
+          } },
+          { src: 'plugin/markdown/marked.js', condition: function() {
+            return !!document.querySelector( '[data-markdown]' );
+          } },
+          { src: 'plugin/markdown/markdown.js', condition: function() {
+            return !!document.querySelector( '[data-markdown]' );
+          } },
+          { src: 'plugin/highlight/highlight.js', async: true, callback: function() {
+            hljs.initHighlightingOnLoad();
+          } },
           { src: 'plugin/zoom-js/zoom.js', async: true },
           { src: 'plugin/notes/notes.js', async: true }
         ]
