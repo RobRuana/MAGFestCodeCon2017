@@ -70,7 +70,6 @@
       .reveal .text-right { text-align: right; }
 
       /* Element Defaults */
-
       .reveal blockquote {
         width: 90%;
         padding: 0.5em;
@@ -106,7 +105,6 @@
       }
 
       /* Layered Image */
-
       .reveal .img {
         position: relative;
         width: 1600px;
@@ -761,23 +759,108 @@ DaemonTask(SendAllAutomatedEmailsJob.send_all_emails, interval=300, name="send e
 
     <aside class="notes">
       This is probably the least controversial issue that I'm going to bring
-      up. We store all of our event configuration in config files instead of in
-      the database.
+      up. We store all of our event configuration in flat config files instead
+      of in the database.
     </aside>
 
-    <h2 class="fragment">Why is this an issue?</h2>
+    <h2 class="fragment">
+      Why is this an issue?
+
+      <aside class="notes">
+        So, why is this an issue?
+      </aside>
+    </h2>
     <ol>
       <li class="fragment">
         Two kinds of config:
+        <aside class="notes">
+          Well, we really have two kinds of config...
+        </aside>
         <ul>
-          <li class="fragment">Service config (DB password, IP address/port, secret keys, etc...)</li>
-          <li class="fragment">Event config (Registration dates, badge prices, departments, etc...)</li>
+          <li class="fragment">
+            Service config (DB password, IP address/port, secret keys, etc...)
+            <aside class="notes">
+              We have our service configuration. Things like database
+              passwords, ip addresses, secret keys. These are all the things
+              you'd expect to find in any given service's config files.
+            </aside>
+          </li>
+          <li class="fragment">
+            Event config (Registration dates, badge prices, departments, etc...)
+            <aside class="notes">
+              Then we have our event configuration. Things like registration
+              deadlines, badge prices, department listings. These are things
+              you'd generally expect to find in a database table.
+              <br><br>
+              So again, why is this an issue?
+            </aside>
+          </li>
         </ul>
       </li>
-      <li class="fragment">Changing event config requires a developer</li>
-      <li class="fragment">Changing event config requires a redeployment</li>
-      <li class="fragment">Difficult to integrate our software into an existing ecosystem</li>
-      <li class="fragment"><code>c</code> variable is not great</li>
+      <li class="fragment">
+        Changing event config requires a developer
+        <aside class="notes">
+          To start with, changing the event config requires a software
+          developer to:
+          <ul>
+            <li>Create a branch in git</li>
+            <li>Update the values in a config file</li>
+            <li>Issue a pull request with the changes</li>
+            <li>
+              And finally, get approval from a <em>second</em> software
+              developer
+            </li>
+          </ul>
+          That is <em>not</em> a cheap proposition. It takes a lot of time,
+          and developer time is not cheap. And it happens all the time.
+          <br><br>
+          <em>All. The. Time.</em>
+          <br><br>
+          Ideally, an event admin should be able to change a value and click
+          a button on a web page. Like, why are we jumping through all these
+          hoops? Doesn't make sense.
+        </aside>
+      </li>
+      <li class="fragment">
+        Changing event config requires a redeployment
+        <aside class="notes">
+          Not only that. In order to actually make changes to the event
+          configuration, we have to redeploy our production servers.
+          <br><br>
+          Did you get that? If you want to change the deaadline for ordering
+          T-Shirts, you have to take your production servers offline.
+          <br><br>
+          Madness!
+        </aside>
+      </li>
+      <li class="fragment">
+        Difficult to integrate our software into an existing ecosystem
+        <aside class="notes">
+          Because of our config files, our software is incredibly difficult to
+          package. It's incredibly difficult to configure. Containerization is
+          possible, but in practice it's unwieldy and brittle, because we have
+          such large and varied config files.
+        </aside>
+      </li>
+      <li class="fragment">
+        <code>c</code> variable is not great
+        <aside class="notes">
+          The <code>c</code> variable, while very convenient, is actually not
+          that great.
+          <ul>
+            <li>It exposes way too much data to our templates</li>
+            <li>
+              It hides complex, expensive functions under the guise of simple
+              config variables
+            </li>
+            <li>
+              It breaks standard config conventions – like the weird
+              <code>[secret]</code> section – which prevents us from using
+              our config to configure third party libraries like SQLAlchemy
+            </li>
+          </ul>
+        </aside>
+      </li>
     </ol>
   </section>
 
@@ -786,7 +869,30 @@ DaemonTask(SendAllAutomatedEmailsJob.send_all_emails, interval=300, name="send e
     <h2>The issue</h2>
     <p>Naming bifurcation (Ubersystem vs RAMS)</p>
 
-    <h2 class="fragment">Why is this an issue?</h2>
+    <aside class="notes">
+      The astute listener will have noticed that our software is named
+      Ubersystem.
+    </aside>
+
+    <h2 class="fragment">
+      Why is this an issue?
+      <aside class="notes">
+        This is problematic for a number of reasons; the most obvious of which
+        is that it shares its name with a certain ride-sharing company.
+        <br><br>
+        Everyone agrees that we need to change the name, and there have even
+        been concerted efforts to do so. But those efforts were never finished,
+        and what we're left with is this bizarre chimera. Are we developing
+        Ubersystem? Are we developing RAMS? Are developing both?
+        <br><br>
+        Would a git repository by any other name smell as sweet?
+        <br><br>
+        And for anyone that thinks this isn't a big deal, I can speak from
+        personal experience that this has very real, very concrete effects on
+        onboarding new developers. It's a confusing to a new developer. I mean
+        it's confusing to even talk about – never mind development.
+      </aside>
+    </h2>
     <blockquote class="fragment text-normal" cite="https://github.com/magfest/ubersystem">
 <h3 class="inline-block">IMPORTANT NOTE</h3>
 <a class="text-xs pull-right">https://github.com/magfest/ubersystem</a>
@@ -796,6 +902,28 @@ DaemonTask(SendAllAutomatedEmailsJob.send_all_emails, interval=300, name="send e
   unless you are actively developing for MAGFest, that you visit the parent
   project at https://github.com/ramsproject/rams
 </div>
+      <aside class="notes">
+        This message is on the front page of our Ubersystem repository. I
+        think it speaks for itself, but let me tell you what happened when I
+        was first hired.
+        <br><br>
+        I like to think of myself as a pretty good developer, and I wanted to
+        get a headstart when I was hired, so before my official start date I
+        figured I would dig through the source code... figure out what I was
+        dealing with. Get a handle on the situation.
+        <br><br>
+        That message was the first thing I was greeted with, and I took it at
+        face value. So I headed over to the RAMS project. Which had the same
+        message on its front page. And I was like, "okay, I guess I can't
+        trust the documentation here..."
+        <br><br>
+        And it was several days of digging through repositories, and following
+        links, just trying to get a handle on the project. It is... byzantine.
+        And I pretty sure I'm using that word correctly.
+        <br><br>
+        So you can't say the naming bifurcation isn't important. It's a huge
+        hurdle to onboarding new developers.
+      </aside>
     </blockquote>
   </section>
 </section>
@@ -1644,9 +1772,9 @@ dorsai = "Dorsai"</span>
 </section>
 
 <section class="text-center">
-  <h1>Questions?</h1>
-  <h1>Comments?</h1>
-  <h1>Growing concerns?</h1>
+  <h1><span class="text-md fragment">Questions?</span></h1>
+  <h1><span class="text-lg fragment">Comments?</span></h1>
+  <h1><span class="text-xl fragment">Growing concerns?</span></h1>
 </section>
 
       </div>
