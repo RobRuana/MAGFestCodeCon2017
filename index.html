@@ -2057,7 +2057,10 @@ dorsai = "Dorsai"</span>
       <li class="fragment">
         Fine grained permissions model
         <aside class="notes">
-          We can add a fine grained permissions model
+          We can add a fine grained permissions model. Our permissions right
+          now are pretty rough, and only limit what the user interface will
+          show you. We can make permissions an intrinsic part of our data
+          model.
         </aside>
       </li>
       <li class="fragment">
@@ -2146,7 +2149,7 @@ dorsai = "Dorsai"</span>
           interface more interactive. We're not gonna get too fancy with our
           web technology stack. These are tools that almost every developer
           out there will be familiar with. The less magic we use, the easier
-          it will be to onboard new developers.
+          it'll be to onboard new developers.
         </aside>
       </span>
       <span class="fragment fade-in">
@@ -2157,8 +2160,8 @@ dorsai = "Dorsai"</span>
           the web interface, and subject to all the same permissions and
           validations.
           <br><br>
-          This will be the same API used by reggie interally, so there will
-          be plenty of examples for third party projects to follow.
+          This will, in fact, be the same API used by reggie interally, so
+          there will be plenty of examples for third party projects to follow.
         </aside>
       </span>
       <span class="fragment fade-in">
@@ -2173,7 +2176,8 @@ dorsai = "Dorsai"</span>
         <img class="img-layer" src="images/architecture06.png">
         <aside class="notes">
           Obviously, our reggie servers will live behind a load balancer.
-          We'll probably just stick with NGINX to start with.
+          We'll probably stick with NGINX to start with. It's pretty, pretty,
+          pretty good.
         </aside>
       </span>
       <span class="fragment fade-in">
@@ -2202,8 +2206,8 @@ dorsai = "Dorsai"</span>
             <li>It's easy to configure</li>
             <li>It's easy to scale if we really start growing</li>
           </ul>
-          Plus there's really no reason to burden Postgres by shoving it full
-          of session data.
+          Plus there's really no reason to burden our Postgres database by
+          shoving it full of session data.
         </aside>
       </span>
       <span class="fragment fade-in">
@@ -2219,7 +2223,7 @@ dorsai = "Dorsai"</span>
           Finally, we have our email server. It lives in a separate process.
           We can spin it up anywhere, same box, different box, whatever. It's
           got a really simple task and it'll just hang out in the background
-          doing it's job.
+          doing it's job, not bothering anyone.
           <br><br>
           The picture I've presented here is really just phase one. This is
           essentially the most basic system design possible. Consider it the
@@ -2233,21 +2237,95 @@ dorsai = "Dorsai"</span>
     <h1>Reggie</h1>
     <h2>Future Improvements</h2>
     <ol>
-      <li class="fragment">Database replication with failover</li>
-      <li class="fragment">Database caching layer</li>
-      <li class="fragment">Database sharding, perhaps per-event</li>
-      <li class="fragment">LDAP authentication</li>
-      <li class="fragment">Pub/sub message queue</li>
-      <li class="fragment">Web socket support</li>
-      <li class="fragment text-xl">To infinity and beyond!</li>
+      <li class="fragment">
+        Database replication with failover
+        <aside class="notes">
+          We can do primary/secondary database replication, with failover. We
+          could split up our reads and writes, so we have only one database
+          that we write to, which is replicated to a bunch of other databases
+          that we read from.
+        </aside>
+      </li>
+      <li class="fragment">
+        Database caching layer
+        <aside class="notes">
+          We could introduce a database caching layer, using something like
+          Redis or Memcached.
+        </aside>
+      </li>
+      <li class="fragment">
+        Database sharding, perhaps per-event
+        <aside class="notes">
+          We could even do database sharding if we ever grow big enough. Maybe
+          per event? Although I doubt we'll ever grow big enough that we'd
+          need to shard our database. Man, that would be crazy.
+        </aside>
+      </li>
+      <li class="fragment">
+        LDAP authentication
+        <aside class="notes">
+          Right now I think we support username/password agains the database,
+          and client certs for our API. But there's no reason we couldn't add
+          other forms of auth, like LDAP. I think that's a request that pops
+          up from time to time.
+        </aside>
+      </li>
+      <li class="fragment">
+        Pub/sub message queue
+        <aside class="notes">
+          We can introduce a message queue, like RabbitMQ, to handle any tasks
+          that might take longer than a few milliseconds. A good potential use
+          for a queue might be payments. User click "Pay Now", we stick the
+          payment on a queue, and return to the user immediately. Now if our
+          payment processor is running a little slower than usual, it doesn't
+          matter, because we've decoupled their server from our user interface.
+        </aside>
+      </li>
+      <li class="fragment">
+        Web socket support
+        <aside class="notes">
+          And speaking of message queues, we'll need something like that if we
+          want to add web socket support across multiple servers.
+          <br><br>
+          This may come as a surprise to a lot of people, but we actually
+          already ship with websocket support. But – you guessed it – our
+          websocket server runs in a background thread, not a background
+          process. So it's totally not suitable for a multi-server environment.
+        </aside>
+      </li>
+      <li class="fragment text-xl">
+        And more!
+        <aside class="notes">
+          And more! Right now we're just talking about first steps, but there
+          is so much room to grow, and so much room to improve. This is
+          absolutely the most exciting place we could be.
+        </aside>
+      </li>
     </ol>
   </section>
 </section>
 
 <section class="text-center">
-  <h1><span class="text-md fragment">Questions?</span></h1>
+  <h1><span class="text-md">Questions?</span></h1>
   <h1><span class="text-lg fragment">Comments?</span></h1>
   <h1><span class="text-xl fragment">Growing concerns?</span></h1>
+  <p class="fragment">
+    <a href="mailto:robruana@magfest.org">robruana@magfest.org</a>
+    <br>
+    <a href="https://twitter.com/rruana">twitter.com/rruana</a>
+    <br>
+    <a href="https://magfest.slack.com/team/RobRuana">@RobRuana on Slack</a>
+  </p>
+  <aside class="notes">
+    Questions?
+    <br>
+    Comments?
+    <br>
+    Growing concerns?
+    <br>
+    I'd love to hear it all. You can email me, tweet at me, hit me up on slack.
+    Whatever is easiest for you, I wanna hear what you have to say.
+  </aside>
 </section>
 
       </div>
