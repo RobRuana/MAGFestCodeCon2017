@@ -932,13 +932,30 @@ DaemonTask(SendAllAutomatedEmailsJob.send_all_emails, interval=300, name="send e
   <section>
     <h1>Refactor</h1>
     <p>Currently we have 15 plugins, in 15 repositories:</p>
+
+    <aside class="notes">
+      Currently we have 15 plugins, in 15 different repositories
+    </aside>
+
     <div class="clearfix"></div>
     <ul class="text-sm col-4 list-none">
       <li><div class="plugin"><span class="title">attendee_tournaments</span></div></li>
       <li><div class="plugin"><span class="title">bands</span></div></li>
       <li>
         <div class="plugin"><span class="title">barcode</span></div>
-        <span class="fragment text-bold">github.com/rams?!</span>
+        <span class="fragment text-bold">
+          github.com/rams?!
+          <aside class="notes">
+            Including the barcode plugin, which – side note – for some
+            inexplicable reason is under the <em>rams</em> account instead of
+            the MAGFest account. And it's not even the RAMSProject account.
+            Barcode has its own account that's just called <em>rams</em>, but
+            its like the only project in that account.
+            <br><br>
+            Which is fine, except I always forget the barcode plugin exists,
+            because I'm always looking in the MAGFest account. But whatever!
+          </aside>
+        </span>
       </li>
       <li><div class="plugin"><span class="title">hotel</span></div></li>
       <li><div class="plugin"><span class="title">magclassic</span></div></li>
@@ -963,12 +980,22 @@ DaemonTask(SendAllAutomatedEmailsJob.send_all_emails, interval=300, name="send e
       <ul class="text-sm col-4 list-none">
         <li><div class="service inline-block"><span class="title">sideboard</span></div></li>
       </ul>
+      <aside class="notes">
+        Additionally we have our own application server called sideboard that
+        also lives in its own repo.
+      </aside>
     </div>
   </section>
 
   <section>
     <h1>Refactor</h1>
     <p>We have 4 deployment configurations:</p>
+
+    <aside class="notes">
+      We have 4 different deployment configurations, one for each event we
+      host.
+    </aside>
+
     <div class="clearfix"></div>
     <div class="col-3">
       <h4>MAGFest</h4>
@@ -1000,6 +1027,13 @@ DaemonTask(SendAllAutomatedEmailsJob.send_all_emails, interval=300, name="send e
         </li>
         <li>
           <div class="fragment grow" data-fragment-index="2">
+            <aside class="notes">
+              The only real differences come from the event specific plugins –
+              of which there are four, one for each event. The main differences
+              these event specific plugins introduce are theme and template
+              changes. Different images, different css, different wording and
+              layout tweaks in the templates.
+            </aside>
             <div class="plugin"><span class="title">magprime</span></div>
           </div>
         </li>
@@ -1070,6 +1104,15 @@ DaemonTask(SendAllAutomatedEmailsJob.send_all_emails, interval=300, name="send e
         </li>
         <li>
           <div class="fragment" data-fragment-index="1">
+            <aside class="notes">
+              If you look closely, you'll notice that each deployment
+              configuration is <i>almost</i> a strict subset of the main
+              MAGFest configuration. Which makes sense when you consider that
+              an event like MAGStock isn't going to have a hotel, so it doesn't
+              really need the hotel plugin.
+              <br><br>
+              So what are the actual differences between each deployment?
+            </aside>
             <div class="fragment fade-out" data-fragment-index="2">
               <div class="plugin text-light"><span class="title">mivs</span></div>
             </div>
@@ -1252,10 +1295,26 @@ DaemonTask(SendAllAutomatedEmailsJob.send_all_emails, interval=300, name="send e
       Of the event plugins, only
       <span class="plugin"><span class="title">magprime</span></span> and
       <span class="plugin"><span class="title">magstock</span></span>
-      modify the database:
+      modify the database
     </p>
-    <div class="col-6">
+
+    <aside class="notes">
+      Of the event plugins, only <code>magprime</code> and
+      <code>magstock</code> actually modify the database. And if we examine
+      the database changes made by each, we'll see that they'd either be
+      already usable by all our events, or could easily be genericized to work
+      for any of our events.
+    </aside>
+
+    <div class="col-6 fragment fade-in">
       <h4>MAGFest</h4>
+
+      <aside class="notes">
+        The <code>magprime</code> plugin adds support for tracking previous
+        season supporters and season ticket holders – a feature that would work
+        well for any event.
+      </aside>
+
       <div class="panel db text-xs">
         <h1 class="title">prev_season_supporter</h1>
         <ul>
@@ -1281,8 +1340,20 @@ DaemonTask(SendAllAutomatedEmailsJob.send_all_emails, interval=300, name="send e
       </div>
     </div>
 
-    <div class="col-6">
+    <div class="col-6 fragment fade-in">
       <h4>MAGStock</h4>
+
+      <aside class="notes">
+        Whereas the <code>magstock</code> plugin adds support for campground
+        preferences. But if you stop and think about it, that could easily be
+        implemented using a more generic "accommodation" model, where a
+        campground is just one specific type of accommodation.
+        <br><br>
+        So, when you actually look at our different deployment configurations,
+        they're not so wildly different that they couldn't be handled by a
+        single more generic deployment configuration.
+      </aside>
+
       <div class="panel db text-xs">
         <h1 class="title">attendee</h1>
         <ul>
@@ -1302,19 +1373,68 @@ DaemonTask(SendAllAutomatedEmailsJob.send_all_emails, interval=300, name="send e
 
   <section>
     <h1>Refactor</h1>
-    <p class="fragment fade-out" data-fragment-index="4">The structure of our deployments looks like this:</p>
+
+    <aside class="notes">
+      The structure of our deployments looks like this. At the top level we
+      have a clone of the sideboard git repository.
+    </aside>
+    <span class="fragment" data-fragment-index="1">
+      <aside class="notes">
+        Sideboard itself has a configuration file, which – for historic
+        reasons – is called development.ini. This houses a lot of the
+        service config I mentioned earlier. It's a small file, and has
+        the kind of config data you'd expect – ip addresses, and ports, etc...
+        But it also specifies the location of the "plugins" directory.
+      </aside>
+    </span>
+    <span class="fragment" data-fragment-index="2">
+      <aside class="notes">
+        Which may or may not be physically located inside the sideboard
+        directory.
+      </aside>
+    </span>
+    <span class="fragment" data-fragment-index="3">
+      <aside class="notes">
+        In either case, each plugin is deployed by cloning the
+        plugin's git repository underneath the "plugins" directory.
+      </aside>
+    </span>
+    <span class="fragment" data-fragment-index="4">
+      <aside class="notes">
+        Finally, the uber plugin has its own development.ini
+        config file. This houses a bit of additional service
+        configuration, and <em>all</em> of our event
+        configuration. These are the settings that define an
+        event: the start date, the end date, the badge prices,
+        and on, and on, and on...
+        <br><br>
+        It's a pretty big file.
+        <br><br>
+        In reality each plugin has its own config file, but most
+        of them are either completely empty, or rarely updated,
+        if they're used at all.
+      </aside>
+    </span>
+    <span class="fragment" data-fragment-index="5">
+      <aside class="notes">
+        Despite the fact that we have this big, complicated deployment
+        structure, like 95% of the work happens right here, in the uber plugin.
+      </aside>
+    </span>
+
+    <p class="fragment fade-out" data-fragment-index="5">The structure of our deployments looks like this:</p>
     <div class="col-7">
       <div class="panel service block text-left text-sm">
-        <h1 class="title inline-block fragment fade-out" data-fragment-index="4">sideboard</h1>
-        <span class=" fragment fade-out" data-fragment-index="4">
-          <div class="panel file inline-block pull-right fragment fade-in" data-fragment-index="0">
+        <h1 class="title inline-block fragment fade-out" data-fragment-index="5">sideboard</h1>
+        <span class=" fragment fade-out" data-fragment-index="5">
+          <div class="panel file inline-block pull-right fragment fade-in" data-fragment-index="1">
             <span class="title">development.ini</span>
           </div>
         </span>
-        <div class="panel folder block fragment fade-in" data-fragment-index="1">
-          <h1 class="title fragment fade-out" data-fragment-index="4">plugins</h1>
-          <div class="fragment fade-in" data-fragment-index="2">
-            <ul class="col-6 fragment fade-out" data-fragment-index="4">
+        <div class="panel folder block fragment fade-in" data-fragment-index="2">
+          <h1 class="title fragment fade-out" data-fragment-index="5">plugins</h1>
+          <div class="fragment fade-in" data-fragment-index="3">
+            <ul class="col-6 fragment fade-out" data-fragment-index="5">
               <li>
                 <div class="plugin">
                   <span class="title">attendee_tournaments</span>
@@ -1348,36 +1468,36 @@ DaemonTask(SendAllAutomatedEmailsJob.send_all_emails, interval=300, name="send e
             </ul>
             <ul class="col-6">
               <li>
-                <div class="plugin fragment fade-out" data-fragment-index="4">
+                <div class="plugin fragment fade-out" data-fragment-index="5">
                   <span class="title">mivs</span>
                 </div>
               </li>
               <li>
-                <div class="plugin fragment fade-out" data-fragment-index="4">
+                <div class="plugin fragment fade-out" data-fragment-index="5">
                   <span class="title">panels</span>
                 </div>
               </li>
               <li>
-                <div class="plugin fragment fade-out" data-fragment-index="4">
+                <div class="plugin fragment fade-out" data-fragment-index="5">
                   <span class="title">reports</span>
                 </div>
               </li>
               <li>
-                <div class="plugin fragment fade-out" data-fragment-index="4">
+                <div class="plugin fragment fade-out" data-fragment-index="5">
                   <span class="title">tabletop</span>
                 </div>
               </li>
               <li>
-                <div class="plugin fragment grow" data-fragment-index="4">
+                <div class="plugin fragment grow" data-fragment-index="5">
                   <span class="title">uber</span>
-                  <div class="panel file inline-block pull-right fragment fade-in" data-fragment-index="3">
+                  <div class="panel file inline-block pull-right fragment fade-in" data-fragment-index="4">
                     <span class="title">development.ini</span>
                   </div>
                   <div class="clearfix"></div>
                 </div>
               </li>
               <li>
-                <div class="plugin fragment fade-out" data-fragment-index="4">
+                <div class="plugin fragment fade-out" data-fragment-index="5">
                   <span class="title">uber_analytics</span>
                 </div>
               </li>
@@ -1388,7 +1508,7 @@ DaemonTask(SendAllAutomatedEmailsJob.send_all_emails, interval=300, name="send e
       </div>
     </div>
     <div class="col-5">
-      <p class="fragment fade-in" data-fragment-index="4" style="margin-top: 58%">
+      <p class="fragment fade-in" data-fragment-index="5" style="margin-top: 58%">
         95% of the work happens here
       </p>
     </div>
@@ -1396,11 +1516,46 @@ DaemonTask(SendAllAutomatedEmailsJob.send_all_emails, interval=300, name="send e
 
   <section>
     <h1>Refactor</h1>
+
+    <aside class="notes">
+      As a programmer, my first instinct is always to throw out the old code
+      and rewrite it from scratch – but this time we'll <em>do it right</em>!
+      <br><br>
+      In reality, a complete rewrite is almost always a bad idea. So instead
+      of rewriting the whole thing, why don't we do something like this...
+    </aside>
+    <span class="fragment" data-fragment-index="1">
+      <aside class="notes">
+        First, we make Ubersystem the single, top level repository.
+      </aside>
+    </span>
+    <span class="fragment" data-fragment-index="2">
+      <aside class="notes">
+        Next instead of separate plugins – each with separate repositories – we
+        suck all the plugins into the main repository. And instead of using the
+        plugin architecture, we can convert all the existing plugins to regular
+        old python modules.
+      </aside>
+    </span>
+    <span class="fragment" data-fragment-index="3">
+      <aside class="notes">
+        And instead of deploying sideboard as a host service, we can import it
+        like we would any other third party library. It can be listed in our
+        "requirements.txt" alongside the rest of our dependencies.
+      </aside>
+    </span>
+    <span class="fragment" data-fragment-index="4">
+      <aside class="notes">
+        We'll have just a single small config file, consisting mainly of our
+        service configuration. And that...
+      </aside>
+    </span>
+
     <p>A complete rewrite is almost always a bad idea, but what about...</p>
     <div class="col-7">
       <div class="panel service block text-left text-sm">
-        <h1 class="title fragment fade-in" data-fragment-index="0">Ubersystem</h1>
-        <div class="panel package block fragment fade-in" data-fragment-index="1">
+        <h1 class="title fragment fade-in" data-fragment-index="1">Ubersystem</h1>
+        <div class="panel package block fragment fade-in" data-fragment-index="2">
           <h1 class="title">python modules</h1>
           <ul class="col-6">
             <li>uber</li>
@@ -1420,27 +1575,27 @@ DaemonTask(SendAllAutomatedEmailsJob.send_all_emails, interval=300, name="send e
           </ul>
           <div class="clearfix"></div>
         </div>
-        <div class="panel file block fragment fade-in" data-fragment-index="2">
+        <div class="panel file block fragment fade-in" data-fragment-index="3">
           <h1 class="title">requirements.txt</h1>
           <div class="col-12">sideboard>=1.0</div>
           <div class="clearfix"></div>
         </div>
-        <div class="panel file block fragment fade-in" data-fragment-index="3">
+        <div class="panel file block fragment fade-in" data-fragment-index="4">
           <h1 class="title">ubersystem.cfg</h1>
         </div>
       </div>
     </div>
     <div class="col-5 text-sm">
-      <p class="fragment fade-in" data-fragment-index="0">
+      <p class="fragment fade-in" data-fragment-index="1">
         Single repository
       </p>
-      <p class="fragment fade-in" data-fragment-index="1">
+      <p class="fragment fade-in" data-fragment-index="2">
         Plugins converted to regular python modules
       </p>
-      <p class="fragment fade-in" data-fragment-index="2" style="margin-top: 36%;">
+      <p class="fragment fade-in" data-fragment-index="3" style="margin-top: 36%;">
         Sideboard imported like a normal library
       </p>
-      <p class="fragment fade-in" data-fragment-index="3" style="margin-top: 11%;">
+      <p class="fragment fade-in" data-fragment-index="4" style="margin-top: 11%;">
         Single config file
       </p>
     </div>
@@ -1448,6 +1603,13 @@ DaemonTask(SendAllAutomatedEmailsJob.send_all_emails, interval=300, name="send e
 
   <section>
     <h1 style="margin-bottom: 0;">Refactor</h1>
+
+    <aside class="notes">
+      Will look like this...
+      <br><br>
+      There shouldn't be anything surprising in here.
+    </aside>
+
     <h3>Service config</h3>
     <div class="panel file text-xs">
       <h1 class="title">ubersystem.cfg</h1>
@@ -1467,19 +1629,109 @@ url = "postgresql://user:pass@localhost:5432/db"
 </code></pre>
     </div>
     <ul>
-      <li class="fragment">Makes packaging super easy</li>
-      <li class="fragment">Makes configuration management super easy</li>
-      <li class="fragment">Makes containerization super easy</li>
-      <li class="fragment">Universally understood paradigm</li>
+      <li class="fragment">
+        Makes packaging super easy
+        <aside class="notes">
+          A single simple config file make packaging super easy.
+        </aside>
+      </li>
+      <li class="fragment">
+        Makes configuration management super easy
+        <aside class="notes">
+          It makes configuration management super easy.
+        </aside>
+      </li>
+      <li class="fragment">
+        Makes containerization super easy
+        <aside class="notes">
+          It makes containerization super easy.
+        </aside>
+      </li>
+      <li class="fragment">
+        Universally understood paradigm
+        <aside class="notes">
+          It's a universally understood paradigm. There's nothing in this
+          config file that's gonna be suprising to any system administrator.
+        </aside>
+      </li>
       <li class="fragment">
         Think of your config as an API
-        <span class="fragment"> – don't burden yourself with an overly complex API</span>
+        <aside class="notes">
+          Just as side note, I'd like you to start thinking of your config as
+          an API. It's the interface through which sysadmins interact with
+          your software.
+        </aside>
+        <span class="fragment">
+          – don't burden yourself with an overly complex API
+          <aside class="notes">
+            So, you know, be kind to your sysadmins. Be kind to yourself.
+            Don't burder yourself with an overly complex API.
+            <br><br>
+            Keep it simple!
+          </aside>
+        </span>
       </li>
     </ul>
   </section>
 
   <section>
     <h1 style="margin-bottom: 0;">Refactor</h1>
+
+    <aside class="notes">
+      If that's the extent of our config file, what happens to all of our
+      event configuration? The rest of our old "development.ini" file?
+      <br><br>
+      Well, it's all going to end up in the database, and the way we do that
+      will vary based on the types of values we're dealing with.
+    </aside>
+    <span class="fragment" data-fragment-index="1">
+      <aside class="notes">
+        A lot of the settings are just straight key/value pairs, like these.
+      </aside>
+    </span>
+    <span class="fragment" data-fragment-index="2">
+      <aside class="notes">
+        And key/value pairs are the easiest to deal with, as they directly map
+        to columns in a new "event" table.
+      </aside>
+    </span>
+    <span class="fragment" data-fragment-index="3">
+      <aside class="notes">
+        But if we want, we can get fancy with some of our key/value settings.
+        For example, it might be a good idea to split the venue off into its
+        own table. In which case we'd add a foreign key column to create a
+        one-to-many relationship.
+      </aside>
+    </span>
+    <span class="fragment" data-fragment-index="4">
+      <aside class="notes">
+        We also have a lot of subsections in our config, like the
+        "badge_ranges" section. We have several options for how we store
+        settings like this. And the choice we make will largely be based on
+        how the data is used.
+      </aside>
+    </span>
+    <span class="fragment" data-fragment-index="5">
+      <aside class="notes">
+        For data that we don't query very often, like "badge_ranges", we can
+        take advantage of Postgres' structured data columns, like "jsonb".
+        We can just shove the whole "badge_ranges" dictionary in a JSON
+        column and call it a day.
+      </aside>
+    </span>
+    <span class="fragment" data-fragment-index="6">
+      <aside class="notes">
+        Or, for some of our more complicated subsections, we may consider
+        breaking them up into separate tables. For example, our
+        "job_location" enum section...
+      </aside>
+    </span>
+    <span class="fragment" data-fragment-index="7">
+      <aside class="notes">
+        ...may be best represented as a standalone "department" table.
+      </aside>
+    </span>
+
     <h3>Event config</h3>
     <div class="col-6">
       <div class="panel file text-xs">
@@ -1543,20 +1795,94 @@ dorsai = "Dorsai"</span>
           </ul>
         </div>
       </div>
-      <div class="col-6" style="padding-right: 0">
-        <div class="panel db text-xs fragment fade-in" data-fragment-index="8">
-          <h1 class="title">event_department</h1>
-          <ul>
-            <li>event_id: <i>uuid</i></li>
-            <li>department_id: <i>uuid</i></li>
-          </ul>
-        </div>
-      </div>
     </div>
   </section>
 
   <section>
     <h1 style="margin-bottom: 0;">Refactor</h1>
+
+    <aside class="notes">
+      Let's take a closer look at what the actual "event" table will look like.
+      It'll have an "id" column for its primary key. Probably a "name" column,
+      a "start_date", an "end_date", and so on...
+    </aside>
+    <span class="fragment" data-fragment-index="1">
+      <aside class="notes">
+        And the data in the table will probably look something like this. The
+        values from our old config file will basically be transplanted directly
+        into the "event" table.
+        <br><br>
+        Not too exciting so far. But wait a second... This is a database table,
+        right? So it can store more than one row!
+      </aside>
+    </span>
+    <span class="fragment" data-fragment-index="2">
+      <aside class="notes">
+        We can store all the settings for a second event in the same table!
+        <br><br>
+        Here we have both Super 2017 and 2018 in the same database!
+      </aside>
+    </span>
+    <span class="fragment" data-fragment-index="3">
+      <aside class="notes">
+        And if we're storing multiple events, we can even store totally
+        different <em>types</em> of events. Like having <em>both</em> Super
+        MAGFest and MAGWest in the same database!
+        <br><br>
+        <i>Head explodes!</i>
+      </aside>
+    </span>
+    <span class="fragment" data-fragment-index="4">
+      <aside class="notes">
+        Yeah, ok, so we have multiple events in the same database table. How
+        does that affect the rest of the system?
+        <br><br>
+        Well, lets start by examining the "attendee" table.
+      </aside>
+    </span>
+    <span class="fragment" data-fragment-index="5">
+      <aside class="notes">
+        We've got an attendee...
+      </aside>
+    </span>
+    <span class="fragment" data-fragment-index="6">
+      <aside class="notes">
+        Attendee...
+      </aside>
+    </span>
+    <span class="fragment" data-fragment-index="7">
+      <aside class="notes">
+        Attendee...
+        <br><br>
+        How do we know which event these attendees attended?!
+      </aside>
+    </span>
+    <span class="fragment" data-fragment-index="8">
+      <aside class="notes">
+        We add an "event_id" column! Here we see the first two attendees are
+        going to MAGFest 2018, and the third attendee is going to MAGWest.
+        <br><br>
+        <i>Head explodes!</i>
+        <br><br>
+        Ok, so it's not <em>that</em> amazing. This is basically "Database
+        Design 101". But I think it demonstrates that by simply cleaning up
+        our codebase, and removing some of our current pain points, the
+        natural consequence is a multi-event, multi-year system.
+        <br><br>
+        I've tried to structure this presentation like a lawyer building a
+        case. Starting with small, seemingly inconsequential changes – that we
+        can all agree on – I've built layer on top of layer. Until finally,
+        when we step back and look at the system as a whole, the conclusion
+        is self evident.
+        <br><br>
+        There's been a lot of hand wringing and overwrought discussion about
+        how to design a "multi-year" Ubersystem. But the truth is that a
+        multi-year system is the logical conclusion of simply correcting some
+        of our early design decisions.
+        <br><br>
+        That's all there is to it!
+      </aside>
+    </span>
 
     <div class="panel db text-xs">
       <h1 class="title">event</h1>
@@ -1681,18 +2007,6 @@ dorsai = "Dorsai"</span>
               <td class="fragment fade-in" data-fragment-index="8">527b039a...</td>
             </tr>
             <tr>
-              <td><span class="fragment fade-in" data-fragment-index="9">ba618d99...</span></td>
-              <td><span class="fragment fade-in" data-fragment-index="9">53</span></td>
-              <td><span class="fragment fade-in" data-fragment-index="9">2017-08-11 09:26</span></td>
-              <td><span class="fragment fade-in" data-fragment-index="9">True</span></td>
-              <td><span class="fragment fade-in" data-fragment-index="9">&nbsp;...&nbsp;</span></td>
-              <td><span class="fragment fade-in" data-fragment-index="9">&nbsp;...&nbsp;</span></td>
-              <td><span class="fragment fade-in" data-fragment-index="9">&nbsp;...&nbsp;</span></td>
-              <td class="fragment fade-in" data-fragment-index="8">
-                <span class="fragment fade-in" data-fragment-index="9">527b039a...</span>
-              </td>
-            </tr>
-            <tr>
               <td></td>
               <td></td>
               <td></td>
@@ -1720,16 +2034,63 @@ dorsai = "Dorsai"</span>
 
   <section>
     <h1 style="margin-bottom: 0;">Refactor</h1>
+
+    <aside class="notes">
+      But that's not the end of the story! There's still lots of opportunity
+      for improvements!
+    </aside>
+
     <h2>That's not the end of the story!</h2>
     <ol>
       <li class="fragment">
-        Split <code>attendee</code> table into <code>person</code> table and <code>registration</code> table
+        Split <code>attendee</code> table into <code>person</code> table and
+        <code>registration</code> table
+        <aside class="notes">
+          We can split the <code>attendee</code> table into a
+          <code>person</code> table and <code>registration</code> table
+        </aside>
       </li>
-      <li class="fragment">Create actual user accounts!</li>
-      <li class="fragment">Fine grained permissions model</li>
-      <li class="fragment">Customizable templates by storing user editable blocks in the database</li>
-      <li class="fragment">Support online creation and editing of automated emails</li>
-      <li class="fragment">And many more features as we go!</li>
+      <li class="fragment">
+        Create actual user accounts!
+        <aside class="notes">
+          We can create actual user accounts!
+        </aside>
+      </li>
+      <li class="fragment">
+        Fine grained permissions model
+        <aside class="notes">
+          We can add a fine grained permissions model
+        </aside>
+      </li>
+      <li class="fragment">
+        Customizable templates by storing user editable blocks in the database
+        <aside class="notes">
+          Here's a big one. We can create user-customizable templates by
+          storing template blocks in the database. Think about it, an admin
+          could customize an event's preregistration page without any
+          intervention by a software developer.
+          <br><br>
+          <i>Head explodes!</i>
+        </aside>
+      </li>
+      <li class="fragment">
+        Support online creation and editing of automated emails
+        <aside class="notes">
+          We can even take that a step further by supporting the
+          <em>online</em> creation and editing of automated emails.
+          <br><br>
+          Need to edit the working of an email? No problem! You can do that
+          right from the browser!
+        </aside>
+      </li>
+      <li class="fragment">
+        And many more features as we go!
+        <aside class="notes">
+          And that's not the end either! We can keep adding features as we go!
+          <br><br>
+          So what's next?
+        </aside>
+      </li>
     </ol>
   </section>
 </section>
@@ -1737,22 +2098,132 @@ dorsai = "Dorsai"</span>
 <section>
   <section>
     <h1>Reggie</h1>
-    <h2 class="fragment">The registration system!</h2>
+    <aside class="notes">
+      I'd like to introduce you to reggie.
+    </aside>
+    <h2 class="fragment">
+      The registration system!
+      <aside class="notes">
+        The registration system!
+        <br><br>
+        Although... reggie actually needs no introduction. Though you may not
+        have realized it, I've been talking about reggie for the past 20
+        minutes! Reggie is the name we're giving to our new registration
+        system, born from the ashes of Uber and RAMS.
+        <br><br>
+        As we've seen, it's going to share a lot of the same guts with as our
+        old system, so navigating the source code will seem familiar to anyone
+        that's worked on Uber already.
+      </aside>
+    </h2>
   </section>
 
   <section>
     <h1>Reggie</h1>
+    <aside class="notes">
+      Now I'd like to spend a little time reviewing the overall system design.
+    </aside>
     <div class="img">
-      <img class="img-layer fragment fade-in" src="images/architecture01.png">
-      <img class="img-layer fragment fade-in" src="images/architecture02.png">
-      <img class="img-layer fragment fade-in" src="images/architecture03.png">
-      <img class="img-layer fragment fade-in" src="images/architecture04.png">
-      <img class="img-layer fragment fade-in" src="images/architecture05.png">
-      <img class="img-layer fragment fade-in" src="images/architecture06.png">
-      <img class="img-layer fragment fade-in" src="images/architecture07.png">
-      <img class="img-layer fragment fade-in" src="images/architecture08.png">
-      <img class="img-layer fragment fade-in" src="images/architecture09.png">
-      <img class="img-layer fragment fade-in" src="images/architecture10.png">
+      <span class="fragment fade-in">
+        <img class="img-layer" src="images/architecture01.png">
+        <aside class="notes">
+          The most prominent component of reggie is the web application. Much
+          like Ubersystem, reggie will be built on cherrypy and SQLAlchemy.
+        </aside>
+      </span>
+      <span class="fragment fade-in">
+        <img class="img-layer" src="images/architecture02.png">
+        <aside class="notes">
+          The core of reggie is the data model, built using SQLAlchemy.
+          Validations and permissions will be built directly on top of the
+          data model, so every part of the application will be subject to
+          those constraints.
+        </aside>
+      </span>
+      <span class="fragment fade-in">
+        <img class="img-layer" src="images/architecture03.png">
+        <aside class="notes">
+          The user interface will be built using Jinja templates to render
+          HTML, bootstrap for styling, and a sprinkling of AJAX to make the
+          interface more interactive. We're not gonna get too fancy with our
+          web technology stack. These are tools that almost every developer
+          out there will be familiar with. The less magic we use, the easier
+          it will be to onboard new developers.
+        </aside>
+      </span>
+      <span class="fragment fade-in">
+        <img class="img-layer" src="images/architecture04.png">
+        <aside class="notes">
+          Unlike Ubersystem, reggie's JSON API will be a first class citizen.
+          Capable of accepting all the authentication mechanisms available to
+          the web interface, and subject to all the same permissions and
+          validations.
+          <br><br>
+          This will be the same API used by reggie interally, so there will
+          be plenty of examples for third party projects to follow.
+        </aside>
+      </span>
+      <span class="fragment fade-in">
+        <img class="img-layer" src="images/architecture05.png">
+        <aside class="notes">
+          While cherrypy is inherently multithreaded, reggie won't spin up any
+          additional tasks in background threads. From day one, we'll be able
+          to spin up as many reggie servers as we'd like.
+        </aside>
+      </span>
+      <span class="fragment fade-in">
+        <img class="img-layer" src="images/architecture06.png">
+        <aside class="notes">
+          Obviously, our reggie servers will live behind a load balancer.
+          We'll probably just stick with NGINX to start with.
+        </aside>
+      </span>
+      <span class="fragment fade-in">
+        <img class="img-layer" src="images/architecture07.png">
+        <aside class="notes">
+          Of course, from an outside perspective, this will only look like a
+          single server. And we can have a ton of these boxes. As many as we
+          need to handle the load.
+          <br><br>
+          For example, our current production server has four CPUs, so our
+          production config would probably spin up four reggie servers on that
+          box. And we could have multiples of those boxes. Like, for prereg
+          launch, we could stand up ten servers for a week, and then scale
+          back down to a single server when the traffic subsides.
+        </aside>
+      </span>
+      <span class="fragment fade-in">
+        <img class="img-layer" src="images/architecture08.png">
+        <aside class="notes">
+          Running multiple servers means they need access to some shared
+          resource to track sessions. I'm thinking Redis would be perfect for
+          that task. I've had great success with Redis in the past.
+          <ul>
+            <li>It's fast</li>
+            <li>It's reliable</li>
+            <li>It's easy to configure</li>
+            <li>It's easy to scale if we really start growing</li>
+          </ul>
+          Plus there's really no reason to burden Postgres by shoving it full
+          of session data.
+        </aside>
+      </span>
+      <span class="fragment fade-in">
+        <img class="img-layer" src="images/architecture09.png">
+        <aside class="notes">
+          Speaking of which! We're sticking with Postgres, cause it's awesome!
+          And it keeps getting better!
+        </aside>
+      </span>
+      <span class="fragment fade-in">
+        <img class="img-layer" src="images/architecture10.png">
+        <aside class="notes">
+          Finally, we have our email server. It lives in a separate process.
+          We can spin it up anywhere, same box, different box, whatever. It's
+          got a really simple task and it'll just hang out in the background
+          doing it's job.
+        </aside>
+      </span>
     </div>
   </section>
 
