@@ -102,6 +102,10 @@
         box-shadow: none;
       }
 
+      .reveal canvas.playback {
+        visibility: hidden;
+      }
+
       /* Layered Image */
       .reveal .img {
         position: relative;
@@ -296,46 +300,49 @@
   </p>
 
   <aside class="notes">
-    Hey everybody, my name is Rob Ruana, and I'm the Director of Software
+    Hey everybody, my name is Rob Ruana. I'm the Director of Software
     Engineering at MAGFest.
     <br><br>
-    Today – if you'll let me – I'd like to talk about the future of software
+    If you'll let me, I'd like to talk about the future of software
     development at MAGFest.
     <br><br>
-    In particular, I have some thoughts on Ubersystem, the software we
-    developed in-house to handle event registration and volunteer management.
+    In particular, I have some thoughts on Ubersystem. Which, if you don't
+    already know, is the software we developed in-house to handle event
+    registration and management.
     <br><br>
-    These slides and their source code is available online at the provided
-    links.
+    Before I start, I should mention, these slides and their source code is
+    available online at these links. Whevever they are. I'll put em in the
+    description.
   </aside>
 </section>
 
 <section>
   <h1>Overview</h1>
   <ol>
-    <li class="fragment">
+    <li>
       Review pain points in current system
       <aside class="notes">
         The first thing we're going to cover are a few pain points in our
-        current system. These are – I guess – design decisions that have caused
-        serious development, or maintenance headaches. These might be things
-        that've prevented us from scaling up to handle heavy load, or have just
-        been generally annoying.
+        current system. These are, I guess, <i>design</i> decisions that have
+        caused some serious headaches. These might be things that've prevented
+        us from scaling up to handle heavy load. There are a few issues that've
+        introduced subtle bugs. And there are a few issues that've been just
+        generally annoying.
       </aside>
     </li>
     <li class="fragment">
       Proposal for refactoring current system
       <aside class="notes">
         The next thing we'll cover are some ideas for refactoring the current
-        system to alleviate some of our pain points
+        system. Hopefully to alleviate some of those pain points.
       </aside>
     </li>
     <li class="fragment">
       Proposal for a persistent, multi-year system
       <aside class="notes">
         And finally, we'll cover a proposal for a multi-year, multi-event,
-        persistent system to replace our current paradigm – which is one server
-        per-event.
+        persistent system to replace our current paradigm – which is one
+        server per-event.
       </aside>
     </li>
   </ol>
@@ -360,17 +367,16 @@
       <em>half</em> of the presentation <em>absolutely railing</em>
       on the current code base. So I think it's really important to take a
       moment to say I am not criticizing – or judging – the developers that
-      built the current system. It grew organically over several iterations,
+      built the current system. It grew organically over many iterations,
       created by volunteers working in their spare time. So I totally
-      understand how the system grew to be the way it is, and why things are
-      the way they are.
+      understand how the system came to be the way it is, and why things
+      are the way they are.
       <br><br>
-      And I should mention, every developer writes bad code, myself included!
-      Any developer that tells you they don't write bad code has fooled
-      themselves!
+      I am aware of the historical context.
       <br><br>
-      Right? And there's a lot <em>really good</em> code in there, too!
-      There's a lot of great stuff in there!
+      And just because I'm spending time on the bad stuff, doesn't mean there
+      isn't a lot of good stuff in our codebase. Because there's a lot
+      of <em>really good</em> code in there, too!
       <br><br>
       So, caveats aside, let's jump in!
     </aside>
@@ -419,12 +425,12 @@ import sideboard
           configured database. But sometimes we definitely <em>don't</em>
           want that, like for our database migration scripts.
           <br><br>
-          I had to completely redo the way the system loads for our database
-          migration scripts, because calling <code>import sideboard</code>
-          would try to completely configure the database before the migration
-          code even had a chance to run.
+          I had to completely redo the way the system is initialized for our
+          database migration scripts. Because calling
+          <code>import sideboard</code> would try to completely build the
+          database schema before the migration code even had a chance to run.
           <br><br>
-          It was nightmarish!
+          It was way harder than it needed to be!
         </aside>
       </li>
       <li class="fragment">
@@ -452,8 +458,8 @@ from uber.common import *
     </code></pre>
 
     <aside class="notes">
-      So this is a thing we do all over the place. And it's not just that we
-      use wildcard imports.
+      Next issue: wildcard imports. "from module import *". So this is a thing
+      we do all over the place. And it's not just that we use wildcard imports.
       <br><br>
       We've managed to magnify the issue by creating a single file called
       <code>common.py</code> into which <em>everything</em> is imported. And
@@ -463,7 +469,7 @@ from uber.common import *
     <h2 class="fragment">
       Why is this an issue?
       <aside class="notes">
-        Okay, so if everything's working, why is this even an issue?
+        Okay, so everything's working, why is this even an issue?
       </aside>
     </h2>
     <ol>
@@ -993,6 +999,26 @@ DaemonTask(SendAllAutomatedEmailsJob.send_all_emails, interval=300, name="send e
       We have 4 different deployment configurations, one for each event we
       host.
     </aside>
+    <span class="fragment" data-fragment-index="1">
+      <aside class="notes">
+        If you look closely, you'll notice that each deployment
+        configuration is <i>almost</i> a strict subset of the main
+        MAGFest configuration. Which makes sense when you consider that
+        an event like MAGStock isn't going to have a hotel, so it doesn't
+        really need the hotel plugin.
+        <br><br>
+        So what are the actual differences between each deployment?
+      </aside>
+    </span>
+    <span class="fragment" data-fragment-index="2">
+      <aside class="notes">
+        The only real differences come from the event specific plugins –
+        of which there are four, one for each event. The main differences
+        these event specific plugins introduce are theme and template
+        changes. Different images, different css, different wording and
+        layout tweaks in the templates.
+      </aside>
+    </span>
 
     <div class="clearfix"></div>
     <div class="col-3">
@@ -1025,13 +1051,6 @@ DaemonTask(SendAllAutomatedEmailsJob.send_all_emails, interval=300, name="send e
         </li>
         <li>
           <div class="fragment grow" data-fragment-index="2">
-            <aside class="notes">
-              The only real differences come from the event specific plugins –
-              of which there are four, one for each event. The main differences
-              these event specific plugins introduce are theme and template
-              changes. Different images, different css, different wording and
-              layout tweaks in the templates.
-            </aside>
             <div class="plugin"><span class="title">magprime</span></div>
           </div>
         </li>
@@ -1102,15 +1121,6 @@ DaemonTask(SendAllAutomatedEmailsJob.send_all_emails, interval=300, name="send e
         </li>
         <li>
           <div class="fragment" data-fragment-index="1">
-            <aside class="notes">
-              If you look closely, you'll notice that each deployment
-              configuration is <i>almost</i> a strict subset of the main
-              MAGFest configuration. Which makes sense when you consider that
-              an event like MAGStock isn't going to have a hotel, so it doesn't
-              really need the hotel plugin.
-              <br><br>
-              So what are the actual differences between each deployment?
-            </aside>
             <div class="fragment fade-out" data-fragment-index="2">
               <div class="plugin text-light"><span class="title">mivs</span></div>
             </div>
@@ -2080,7 +2090,6 @@ dorsai = "Dorsai"</span>
           We can even take that a step further by supporting the
           <em>online</em> creation and editing of automated emails.
           <br><br>
-          Need to edit the working of an email? No problem! You can do that
           right from the browser!
         </aside>
       </li>
@@ -2264,7 +2273,7 @@ dorsai = "Dorsai"</span>
       <li class="fragment">
         LDAP authentication
         <aside class="notes">
-          Right now I think we support username/password agains the database,
+          Right now I think we support username/password against the database,
           and client certs for our API. But there's no reason we couldn't add
           other forms of auth, like LDAP. I think that's a request that pops
           up from time to time.
@@ -2275,7 +2284,7 @@ dorsai = "Dorsai"</span>
         <aside class="notes">
           We can introduce a message queue, like RabbitMQ, to handle any tasks
           that might take longer than a few milliseconds. A good potential use
-          for a queue might be payments. User click "Pay Now", we stick the
+          for a queue might be payments. User clicks "Pay Now", we stick the
           payment on a queue, and return to the user immediately. Now if our
           payment processor is running a little slower than usual, it doesn't
           matter, because we've decoupled their server from our user interface.
@@ -2351,6 +2360,14 @@ dorsai = "Dorsai"</span>
         width: 1600,
         height: 900,
 
+        // Display controls in the bottom right corner
+        controls: true,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
         transition: 'slide', // none/fade/slide/convex/concave/zoom
         transitionSpeed: 'fast', // default/fast/slow
         backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
@@ -2373,13 +2390,6 @@ dorsai = "Dorsai"</span>
           { src: 'plugin/notes/notes.js', async: true }
         ]
       });
-
-      Reveal.addEventListener('fragmentshown', function(event) {
-        if (hasClass(event.fragment, 'fragment-bg-red')) {
-          console.log('fragment-bg-red')
-        }
-      });
-
     </script>
   </body>
 </html>
